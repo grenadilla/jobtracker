@@ -10,8 +10,9 @@ def fetch_user(user_id):
 def get_all(table, attributes, page, per_page):
     conn = db.connect()
     query_results = conn.execute(f'SELECT * FROM {table} LIMIT {per_page} OFFSET {(page - 1) * per_page}')
+    total = conn.execute(f'SELECT COUNt(*) FROM {table}').fetchone()[0]
     conn.close()
-    return [dict(zip(attributes, result)) for result in query_results]
+    return [dict(zip(attributes, result)) for result in query_results], total
 
 def all_companies(page, per_page):
     return get_all('Company', ["id", "name", "website", "description"], page, per_page)

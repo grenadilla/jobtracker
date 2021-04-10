@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from app import app
 from app import database
+from math import ceil
 
 @app.route("/")
 def homepage():
@@ -20,8 +21,8 @@ def get_all(query_func):
         per_page = int(request.args.get('per_page'))
     except:
         per_page = 25
-    query_result = query_func(page, per_page)
-    return jsonify(query_result)
+    query_result, total = query_func(page, per_page)
+    return jsonify({"payload": query_result, "total_pages": ceil(total / per_page), "current_page": page, "per_page": per_page})
 
 @app.route('/company/all', methods=["GET"])
 def get_companies():
