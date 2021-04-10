@@ -1,45 +1,47 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
 import Paginator from '../../utils/pagination';
 
-const Company = () => {
+const AllView = ({domain, apiDomain, attributes}) => {
     const query = new URLSearchParams(useLocation().search);
     const currentPage = parseInt(query.get("page")) || 1;
     const perPage = parseInt(query.get("per_page")) || 25;
     const [totalPages, setTotalPages] = useState(1);
-    const [companyData, setCompanyData] = useState([]);
+    const [tableData, setTableData] = useState([]);
 
     useEffect(() => {
-        const url = new URL("http://127.0.0.1:5000/company/all");
+        const url = new URL(apiDomain);
         const params = { page: currentPage, per_page: perPage };
         url.search = new URLSearchParams(params).toString();
         fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                setCompanyData(data.payload); 
+                setTableData(data.payload); 
                 setTotalPages(data.total_pages)
             })
             .catch((err) => console.log(err));
-    }, [currentPage, perPage]);
+    }, [currentPage, perPage, apiDomain]);
 
     const table = useMemo(() => {
-        const rows = companyData.map((entry) => (
-            <tr key={entry.id}>
-                <td>{entry.id}</td>
-                <td>{entry.name}</td>
-                <td>{entry.website}</td>
-                <td>{entry.description}</td>
-            </tr>
-        ))
+        const rows = tableData.map((entry) => {
+            const cells = attributes.map((attribute) => (
+                <td key={attribute}>{entry[attribute]}</td>
+            ))
+            return (<tr key={entry.id}>
+                {cells}
+            </tr>);
+        })
+        const thCells = attributes.map((attribute) => (
+            <th key={attribute}>{attribute}</th>
+        ));
         return (
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Website</th>
-                        <th>Description</th>
+                        {thCells}
                     </tr>
                 </thead>
                 <tbody>
@@ -47,14 +49,15 @@ const Company = () => {
                 </tbody>
             </Table>
         );
-    }, [companyData]);
+    }, [tableData, attributes]);
 
     return (
-        <div>
+        <Container style={{marginTop: "1rem"}}>
+            <Paginator span={3} domain={domain} currentPage={currentPage} totalPages={totalPages} perPage={perPage}/>
             {table}
-            <Paginator domain="/company" currentPage={currentPage} totalPages={totalPages} perPage={perPage}/>
-        </div>
+            <Paginator span={3} domain={domain} currentPage={currentPage} totalPages={totalPages} perPage={perPage}/>
+        </Container>
     )
 }
 
-export default Company;
+export default AllView;
