@@ -17,7 +17,7 @@ def get_user(user_id):
     query_result = database.fetch_user(user_id)
     return jsonify(query_result)
 
-@app.route('/user/update', methods=["POST"])
+@app.route('/user/edit', methods=["POST"])
 def update_user():
     database.edit_user(request.get_json())
     return "SUCCESS"
@@ -74,4 +74,24 @@ def delete_company():
 @app.route('/posting/all', methods=["GET"])
 def get_postingss():
     return get_all(database.all_postings)
+
+@app.route('/posting/<int:posting_id>', methods=["GET"])
+def get_posting(posting_id):
+    query_result = database.fetch_posting(posting_id)
+    return jsonify(query_result)
+
+@app.route('/posting/create', methods=["POST"])
+def create_posting():
+    database.create_posting(request.get_json())
+    return "SUCCESS"
+
+@app.route('/posting/edit', methods=["POST"])
+def update_posting():
+    database.edit_posting(request.get_json())
+    return "SUCCESS"
+
+@app.route('/posting/delete', methods=["POST"])
+def delete_posting():
+    database.delete_posting(request.get_json()["id"])
+    return "SUCCESS"
 
