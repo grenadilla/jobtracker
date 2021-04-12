@@ -95,3 +95,22 @@ def delete_posting():
     database.delete_posting(request.get_json()["id"])
     return "SUCCESS"
 
+@app.route('/application/all', methods=["GET"])
+def get_application(application_id):
+    return get_all(database.all_applications)
+
+@app.route('/application/create', methods=["POST"])
+def create_application():
+    database.create_application(request.get_json())
+    return "SUCCESS"
+
+@app.route('/application/edit', methods=["POST"])
+def update_application():
+    database.edit_application(request.get_json())
+    return "SUCCESS"
+
+@app.route('/application/delete', methods=["POST"])
+def delete_application():
+    database.delete_application(request.get_json()["id"])
+    return "SUCCESS"
+

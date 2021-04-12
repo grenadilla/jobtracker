@@ -94,3 +94,17 @@ def delete_posting(id):
     conn.execute(f'DELETE FROM Posting WHERE id = {id}')
     conn.close()
 
+def create_application(data):
+    conn = db.connect()
+    conn.execute(f'INSERT INTO Application (user_id, posting_id, status, portal) VALUES ("{data["user_id"]}", "{data["posting_id"]}", "{data["status"]}", "{data["portal"]}")')
+    conn.close()
+
+def edit_application(data):
+    conn = db.connect()
+    conn.execute(f'UPDATE Application SET status = "{data["status"]}" WHERE id = {data["id"]}')
+    conn.close()
+
+def delete_application(id):
+    conn = db.connect()
+    conn.execute(f'DELETE FROM Application WHERE id = {id}')
+    conn.close()
