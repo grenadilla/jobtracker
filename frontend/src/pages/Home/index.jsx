@@ -16,6 +16,9 @@ const Home = () => (
       <Link to="/company">Company</Link>
     </Row>
     <Row>
+      <Link to="/posting">Posting</Link>
+    </Row>
+    <Row>
       <Link to="/most_applicants">Jeffrey's Advanced Query</Link>
     </Row>
   </Container>
