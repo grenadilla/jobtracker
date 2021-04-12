@@ -58,3 +58,63 @@ def most_applicants():
     query_results = database.most_applicants()
     print(query_results)
     return jsonify(query_results)
+
+
+@app.route('/posting/<int:posting_id>', methods=["GET"])
+def get_posting(posting_id):
+    query_result = database.fetch_posting(posting_id)
+    return jsonify(query_result)
+
+@app.route('/posting/create', methods=["POST"])
+def create_posting():
+    database.create_posting(request.get_json())
+    return "SUCCESS"
+
+@app.route('/posting/edit', methods=["POST"])
+def update_posting():
+    database.edit_posting(request.get_json())
+    return "SUCCESS"
+
+@app.route('/posting/delete', methods=["POST"])
+def delete_posting():
+    database.delete_posting(request.get_json()["id"])
+    return "SUCCESS"
+
+@app.route('/application/all', methods=["GET"])
+def get_applications(application_id):
+    return get_all(database.all_applications)
+
+@app.route('/application/create', methods=["POST"])
+def create_application():
+    database.create_application(request.get_json())
+    return "SUCCESS"
+
+@app.route('/application/edit', methods=["POST"])
+def update_application():
+    database.edit_application(request.get_json())
+    return "SUCCESS"
+
+@app.route('/application/delete', methods=["POST"])
+def delete_application():
+    database.delete_application(request.get_json()["id"])
+    return "SUCCESS"
+
+@app.route('/skill/<int:skill_id>', methods=["GET"])
+def get_skill(skill_id):
+    query_result = database.fetch_skill(skill_id)
+    return jsonify(query_result)
+
+@app.route('/skill/edit', methods=["POST"])
+def update_skill():
+    database.edit_skill(request.get_json())
+    return "SUCCESS"
+
+@app.route('/skill/create', methods=["POST"])
+def create_skill():
+    database.create_skill(request.get_json())
+    return "SUCCESS"
+
+@app.route('/skill/delete', methods=["POST"])
+def delete_skill():
+    database.delete_skill(request.get_json()["id"])
+    return "SUCCESS"
