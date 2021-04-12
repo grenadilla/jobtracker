@@ -104,6 +104,11 @@ def delete_posting():
 def get_applications():
     return get_all(database.all_applications)
 
+@app.route('/application/<int:id>', methods=["GET"])
+def get_application(id):
+    query_result = database.fetch_application(id)
+    return jsonify(query_result)
+
 @app.route('/application/create', methods=["POST"])
 def create_application():
     database.create_application(request.get_json())

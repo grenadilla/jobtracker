@@ -1,5 +1,7 @@
 from app import db
 from sqlalchemy import select
+import uuid
+import hashlib
 
 def fetch_user(user_id):
     conn = db.connect()
@@ -72,10 +74,11 @@ def create_user(data) -> int:
 
   # code derived from
   # https://stackoverflow.com/questions/9594125/salt-and-hash-a-password-in-python
-  salt = uuid.uuid4().hex
-  hashed_password = hashlib.sha512(password + salt).hexdigest()
+  #password = data["password"]
+  #salt = uuid.uuid4().hex
+  #hashed_password = hashlib.sha512(password + salt).hexdigest()
 
-  query = 'INSERT INTO User (username, password, name, grade, gpa) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["gpa"]}");'
+  query = f'INSERT INTO User (username, hashed_password, name, grade, GPA) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["GPA"]}");'
   conn.execute(query)
   query_results = conn.execute("SELECT LAST_INSERT_ID();")
   query_results = [x for x in query_results]
@@ -86,13 +89,13 @@ def create_user(data) -> int:
 
 def edit_user(data) -> None:
 	conn = db.connect()
-	query = 'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["user_id"]};'
+	query = f'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["id"]};'
 	conn.execute(query)
 	conn.close()
 
 def delete_user(id) -> None:
 	conn = db.connect()
-	query = 'DELETE FROM User WHERE id={};'.format(id)
+	query = f'DELETE FROM User WHERE id={id};'
 	conn.execute(query)
 	conn.close()
 
@@ -120,7 +123,7 @@ def delete_posting(id):
     conn.close()
 
 def all_applications(page, per_page, search = None):
-    return get_all('Application', ["user_id", "posting_id", "status", "portal"], page, per_page, search_attribute="status", search=search)
+    return get_all('Application', ["id", "user_id", "posting_id", "status", "portal"], page, per_page, search_attribute="status", search=search)
 
 def fetch_application(application_id):
     conn = db.connect()
@@ -128,7 +131,7 @@ def fetch_application(application_id):
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["user_id", "posting_id", "status", "portal"], query_result))
+    return dict(zip(["id", "user_id", "posting_id", "status", "portal"], query_result))
 
 def create_application(data):
     conn = db.connect()
@@ -151,16 +154,16 @@ def fetch_skill(skill_id):
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["id", "skill_name"], query_result))
+    return dict(zip(["id", "name"], query_result))
 
 def edit_skill(data):
     conn = db.connect()
-    conn.execute(f'UPDATE Skill SET skill_name = "{data["skill_name"]}" WHERE id = {data["id"]}')
+    conn.execute(f'UPDATE Skill SET name = "{data["name"]}" WHERE id = {data["id"]}')
     conn.close()
 
 def create_skill(data):
     conn = db.connect()
-    conn.execute(f'INSERT INTO Skill (skill_name) VALUES ("{data["skill_name"]}")')
+    conn.execute(f'INSERT INTO Skill (name) VALUES ("{data["name"]}")')
     conn.close()
 
 def delete_skill(id):
