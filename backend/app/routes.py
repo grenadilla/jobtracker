@@ -71,7 +71,8 @@ def delete_company():
 
 @app.route('/posting/all', methods=["GET"])
 def get_postings():
-    return get_all(database.all_postings)
+    search = request.args.get('search')
+    return get_all(database.all_postings, search)
 
 @app.route('/most_applicants', methods=["GET"])
 def most_applicants():
@@ -79,10 +80,10 @@ def most_applicants():
     print(query_results)
     return jsonify(query_results)
 
-
 @app.route('/posting/<int:posting_id>', methods=["GET"])
 def get_posting(posting_id):
     query_result = database.fetch_posting(posting_id)
+    print(query_result)
     return jsonify(query_result)
 
 @app.route('/posting/create', methods=["POST"])

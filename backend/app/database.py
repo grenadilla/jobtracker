@@ -46,8 +46,46 @@ def delete_company(id):
     conn.execute(f'DELETE FROM Company WHERE id = {id}')
     conn.close()
 
-def all_postings(page, per_page, Search = None):
-    return get_all('Posting', ["id", "title", "description", "location", "link", "due_date", "posted_by"], page, per_page)
+def all_postings(page, per_page, search = None):
+    return get_all('Posting', ["id", "title", "description", "location", "link", "due_date", "posted_by"], 
+        page, 
+        per_page,
+        search_attribute="title", search=search)
+
+def fetch_posting(posting_id):
+    conn = db.connect()
+    query_result = conn.execute(f'SELECT * FROM Posting WHERE id = {posting_id}').fetchone()
+    conn.close()
+    if query_result is None:
+        return None
+    return dict(zip(["id", "title", "description", "location", "link", "due_date", "posted_by"], query_result))
+
+def edit_posting(data):
+    conn = db.connect()
+    query = f"""
+    'UPDATE Posting 
+    SET title = "{data["title"]}", description = "{data["description"]}",
+    location = "{data["location"]}", link = "{data["link"]}",
+    due_date = "{data["due_date"]}", posted_by = {data["posted_by"]}
+    WHERE id = {data["id"]}'
+    """
+    conn.execute(query)
+    conn.close()
+
+def create_posting(data):
+    conn = db.connect()
+    query = f"""
+    INSERT INTO Posting (title, description, location, link, due_date, posted_by) 
+    VALUES ("{data["title"]}", "{data["description"]}", "{data["location"]}",
+    "{data["link"]}", "{data["due_date"]}", {data["posted_by"]})
+    """
+    conn.execute(query)
+    conn.close()
+
+def delete_posting(id):
+    conn = db.connect()
+    conn.execute(f'DELETE FROM Posting WHERE id = {id}')
+    conn.close()
 
 def most_applicants():
     query = """
@@ -61,7 +99,6 @@ def most_applicants():
     query_results = conn.execute(query).fetchall()
     conn.close()
     return [dict(zip(["id", "name", "title", "num"], result)) for result in query_results]
-                 
  
 
 def all_users(page, per_page, search = None):
@@ -75,7 +112,7 @@ def create_user(data) -> int:
   salt = uuid.uuid4().hex
   hashed_password = hashlib.sha512(password + salt).hexdigest()
 
-  query = 'INSERT INTO User (username, password, name, grade, gpa) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["gpa"]}");'
+  query = f'INSERT INTO User (username, password, name, grade, gpa) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["gpa"]}");'
   conn.execute(query)
   query_results = conn.execute("SELECT LAST_INSERT_ID();")
   query_results = [x for x in query_results]
@@ -86,7 +123,7 @@ def create_user(data) -> int:
 
 def edit_user(data) -> None:
 	conn = db.connect()
-	query = 'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["user_id"]};'
+	query = f'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["user_id"]};'
 	conn.execute(query)
 	conn.close()
 
@@ -95,29 +132,6 @@ def delete_user(id) -> None:
 	query = 'DELETE FROM User WHERE id={};'.format(id)
 	conn.execute(query)
 	conn.close()
-
-def fetch_posting(posting_id):
-    conn = db.connect()
-    query_result = conn.execute(f'SELECT * FROM Posting WHERE id = {posting_id};').fetchone()
-    conn.close()
-    if query_result is None:
-        return None
-    return dict(zip(["id", "description", "location", "link", "due_date", "posted_by"], query_result))
-
-def create_posting(data):
-    conn = db.connect()
-    conn.execute(f'INSERT INTO Posting (title, description, location, link, due_date, posted_by) VALUES ("{data["title"]}", "{data["description"]}", "{data["location"]}", "{data["link"]}", "{data["due_date"]}", "{data["posted_by"]}")')
-    conn.close()
-
-def edit_posting(data):
-    conn = db.connect()
-    conn.execute(f'UPDATE Posting SET title = "{data["title"]}", description = "{data["description"]}" WHERE id = {data["id"]}')
-    conn.close()
-
-def delete_posting(id):
-    conn = db.connect()
-    conn.execute(f'DELETE FROM Posting WHERE id = {id}')
-    conn.close()
 
 def all_applications(page, per_page, search = None):
     return get_all('Application', ["user_id", "posting_id", "status", "portal"], page, per_page, search_attribute="status", search=search)
