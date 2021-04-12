@@ -48,3 +48,33 @@ def delete_company(id):
 
 def all_postings(page, per_page):
     return get_all('Posting', ["id", "title", "description", "location", "link", "due_date", "posted_by"], page, per_page)
+
+
+def create_user(data) -> int:
+  conn = db.connect()
+
+  # code derived from
+  # https://stackoverflow.com/questions/9594125/salt-and-hash-a-password-in-python
+  salt = uuid.uuid4().hex
+  hashed_password = hashlib.sha512(password + salt).hexdigest()
+
+  query = 'INSERT INTO User (id, username, password, name, grade, gpa) VALUES(""{data["id"]}", "{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["gpa"]}");'
+  conn.execute(query)
+  query_results = conn.execute("SELECT LAST_INSERT_ID();")
+  query_results = [x for x in query_results]
+  user_id = query_results[0][0]
+  conn.close()
+
+  return user_id
+
+def delete_user_by_id(user_id: int) -> None:
+	conn = db.connect()
+	query = 'DELETE FROM User WHERE id={};'.format(user_id)
+	conn.execute(query)
+	conn.close()
+
+def update_user_entry(data) -> None:
+	conn = db.connect()
+	query = 'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["user_id"]};'
+	conn.execute(query)
+	conn.close()
