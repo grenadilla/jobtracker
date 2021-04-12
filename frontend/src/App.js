@@ -4,6 +4,7 @@ import AllView from './pages/AllView';
 import Company from './pages/Company';
 import MostApplicants from './pages/MostApplicants';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import User from './pages/User';
 
 const App = () => (
   <Router>
@@ -28,6 +29,18 @@ const App = () => (
       </Route>
       <Route path="/most_applicants">
         <MostApplicants/>
+      </Route>
+      <Route exact path="/user">
+        <AllView domain="/user" apiDomain="http://127.0.0.1:5000/user/all" attributes={["id", "username", "name", "grade", "gpa"]} /> 
+      </Route>
+      <Route exact path="/user/create">
+        <User create />
+      </Route>
+      <Route exact path="/user/:id">
+        <User />
+      </Route>
+      <Route exact path="/user/edit">
+        <User edit />
       </Route>
     </Switch>
   </Router>
