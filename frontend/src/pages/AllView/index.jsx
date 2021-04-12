@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Paginator from '../../utils/pagination';
@@ -32,7 +32,7 @@ const AllView = ({domain, apiDomain, attributes}) => {
                 <td key={attribute}>{entry[attribute]}</td>
             ))
             return (
-                <tr key={entry.id} style={{cursor: "pointer"}} onClick={() => history.push(`/company/${entry.id}`)}>
+                <tr key={entry.id} style={{cursor: "pointer"}} onClick={() => history.push(`${domain}/${entry.id}`)}>
                     {cells}
                 </tr>
             );
@@ -57,6 +57,7 @@ const AllView = ({domain, apiDomain, attributes}) => {
     return (
         <Container style={{marginTop: "1rem"}}>
             <Paginator span={3} domain={domain} currentPage={currentPage} totalPages={totalPages} perPage={perPage}/>
+            <Link to={`${domain}/create`}>Create</Link>
             {table}
             <Paginator span={3} domain={domain} currentPage={currentPage} totalPages={totalPages} perPage={perPage}/>
         </Container>

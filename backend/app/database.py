@@ -32,5 +32,15 @@ def edit_company(data):
     conn.execute(f'UPDATE Company SET name = "{data["name"]}", description = "{data["description"]}" WHERE id = {data["id"]}')
     conn.close()
 
+def create_company(data):
+    conn = db.connect()
+    conn.execute(f'INSERT INTO Company (name, website, description) VALUES ("{data["name"]}", "{data["website"]}", "{data["description"]}")')
+    conn.close()
+
+def delete_company(id):
+    conn = db.connect()
+    conn.execute(f'DELETE FROM Company WHERE id = {id}')
+    conn.close()
+
 def all_postings(page, per_page):
     return get_all('Posting', ["id", "title", "description", "location", "link", "due_date", "posted_by"], page, per_page)

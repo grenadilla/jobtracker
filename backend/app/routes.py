@@ -38,6 +38,16 @@ def update_company():
     database.edit_company(request.get_json())
     return "SUCCESS"
 
+@app.route('/company/create', methods=["POST"])
+def create_company():
+    database.create_company(request.get_json())
+    return "SUCCESS"
+
+@app.route('/company/delete', methods=["POST"])
+def delete_company():
+    database.delete_company(request.get_json()["id"])
+    return "SUCCESS"
+
 @app.route('/posting/all', methods=["GET"])
 def get_postingss():
     return get_all(database.all_postings)

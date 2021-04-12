@@ -13,11 +13,14 @@ const App = () => (
       <Route exact path="/company">
         <AllView domain="/company" apiDomain="http://127.0.0.1:5000/company/all" attributes={["id", "name", "website", "description"]} /> 
       </Route>
+      <Route exact path="/company/create">
+        <Company create />
+      </Route>
       <Route exact path="/company/:id">
         <Company />
       </Route>
       <Route exact path="/company/:id/edit">
-        <Company edit={true} />
+        <Company edit />
       </Route>
       <Route path="/posting">
         <AllView domain="/posting" apiDomain="http://127.0.0.1:5000/posting/all" attributes={["id", "title", "description", "location", "link", "due_date", "posted_by"]} />

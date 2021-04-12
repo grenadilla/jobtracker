@@ -13,23 +13,27 @@ const Company = ({edit = false, create = false}) => {
 
     const history = useHistory();
 
+    console.log(edit, create);
+
     useEffect(() => {
-        const apiDomain = `http://127.0.0.1:5000/company/${id}`
-        const url = new URL(apiDomain);
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                setCompanyData(data);
-                setFormName(data.name);
-                setFormWebsite(data.website);
-                setFormDescription(data.description);
-            })
-            .catch((err) => console.log(err));
+        if (!create) {
+            const apiDomain = `http://127.0.0.1:5000/company/${id}`
+            const url = new URL(apiDomain);
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    setCompanyData(data);
+                    setFormName(data.name);
+                    setFormWebsite(data.website);
+                    setFormDescription(data.description);
+                })
+                .catch((err) => console.log(err));
+        }
     }, [edit, create, id]);
 
     const submittable = formName && formWebsite && formDescription;
 
-    function apiEdit() {
+    function apiEdit(create) {
         const data = {
             id,
             name: formName,
@@ -37,15 +41,27 @@ const Company = ({edit = false, create = false}) => {
             description: formDescription
         }
 
-        const url = "http://127.0.0.1:5000/company/edit";
+        const url = create ? "http://127.0.0.1:5000/company/create" : "http://127.0.0.1:5000/company/edit";
+        const redirect = create ? '/company' : `/company/${id}`;
         fetch(url, { method: 'post', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }, 
             body: JSON.stringify(data)
-        }).then(() => history.push(`/company/${id}`));
+        }).then(() => history.push(redirect));
+    }
 
+    function apiDelete() {
+        const url = "http://127.0.0.1:5000/company/delete";
+        const redirect = '/company';
+        fetch(url, { method: 'post', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({id})
+        }).then(() => history.push(redirect));
     }
 
     let page = "Loading...";
@@ -68,7 +84,7 @@ const Company = ({edit = false, create = false}) => {
                     </Form.Group>
                 </Form>
                 <div>
-                    <Button variant="success" disabled={!submittable} onClick={() => apiEdit()}> Submit</Button>
+                    <Button variant="success" disabled={!submittable} onClick={() => apiEdit(false)}> Submit</Button>
                     <Button variant="warning" onClick={() => history.push(`/company/${id}`)}>Cancel</Button>
                 </div>
                 </>
@@ -80,11 +96,35 @@ const Company = ({edit = false, create = false}) => {
                     <h1>Name: {companyData.name}</h1>
                     <div>
                         <Link to={`/company/${id}/edit`}>Edit</Link>
+                        <Link to={`/company/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>
                     </div>
                     <p>{companyData.description}</p>
                 </>
             )
         }
+    } else if (create) {
+        page = (
+            <>
+            <Form>
+                <Form.Group>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" value={formName} onChange={(e) => setFormName(e.target.value)}/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Website</Form.Label>
+                    <Form.Control type="text" value={formWebsite} onChange={(e) => setFormWebsite(e.target.value)}/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control as="textarea" value={formDescription} onChange={(e) => setFormDescription(e.target.value)} />
+                </Form.Group>
+            </Form>
+            <div>
+                <Button variant="success" disabled={!submittable} onClick={() => apiEdit(true)}> Submit</Button>
+                <Button variant="warning" onClick={() => history.push(`/company`)}>Cancel</Button>
+            </div>
+            </>
+        );
     }
 
     return <Container>{page}</Container>
