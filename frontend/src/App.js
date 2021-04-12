@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import AllView from './pages/AllView';
 import Company from './pages/Company';
+import MostApplicants from './pages/MostApplicants';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => (
@@ -24,6 +25,9 @@ const App = () => (
       </Route>
       <Route path="/posting">
         <AllView domain="/posting" apiDomain="http://127.0.0.1:5000/posting/all" attributes={["id", "title", "description", "location", "link", "due_date", "posted_by"]} />
+      </Route>
+      <Route path="/most_applicants">
+        <MostApplicants/>
       </Route>
     </Switch>
   </Router>

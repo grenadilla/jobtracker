@@ -48,3 +48,16 @@ def delete_company(id):
 
 def all_postings(page, per_page):
     return get_all('Posting', ["id", "title", "description", "location", "link", "due_date", "posted_by"], page, per_page)
+
+def most_applicants():
+    query = """
+    SELECT Posting.id, name, title, COUNT(Application.id) AS num
+    FROM Application JOIN Posting ON Application.posting_id = Posting.id JOIN Company ON Posting.posted_by = Company.id 
+    WHERE status = "APPLIED"
+    GROUP BY Posting.id
+    ORDER BY num DESC;
+    """
+    conn = db.connect()
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    return [dict(zip(["id", "name", "title", "num"], result)) for result in query_results]

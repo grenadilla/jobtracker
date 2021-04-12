@@ -50,5 +50,11 @@ def delete_company():
     return "SUCCESS"
 
 @app.route('/posting/all', methods=["GET"])
-def get_postingss():
+def get_postings():
     return get_all(database.all_postings)
+
+@app.route('/most_applicants', methods=["GET"])
+def most_applicants():
+    query_results = database.most_applicants()
+    print(query_results)
+    return jsonify(query_results)
