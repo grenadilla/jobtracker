@@ -12,7 +12,7 @@ const Company = ({edit = false, create = false}) => {
     const [formDescription, setFormDescription] = useState("");
 
     const history = useHistory();
-    
+
     useEffect(() => {
         if (!create) {
             const apiDomain = `http://127.0.0.1:5000/company/${id}`
@@ -93,7 +93,7 @@ const Company = ({edit = false, create = false}) => {
                     <h1>ID: {companyData.id}</h1>
                     <h1>Name: {companyData.name}</h1>
                     <div>
-                        <Link to={`/company/${id}/edit`}>Edit</Link>
+                        <Link to={`/company/${id}/edit`} style={{marginRight: 10}}>Edit</Link>
                         <Link to={`/company/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>
                     </div>
                     <p>{companyData.description}</p>
