@@ -12,9 +12,7 @@ const Company = ({edit = false, create = false}) => {
     const [formDescription, setFormDescription] = useState("");
 
     const history = useHistory();
-
-    console.log(edit, create);
-
+    
     useEffect(() => {
         if (!create) {
             const apiDomain = `http://127.0.0.1:5000/company/${id}`

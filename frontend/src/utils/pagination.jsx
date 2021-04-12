@@ -2,10 +2,10 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Pagination from 'react-bootstrap/Pagination';
 
-const Paginator = ({span=2, domain, currentPage, totalPages, perPage}) => {
+const Paginator = ({span=2, domain, currentPage, totalPages, perPage, search}) => {
     const history = useHistory();
     const Action = (number) => {
-        history.push(`${domain}?page=${number}&per_page=${perPage}`)
+        history.push(`${domain}?page=${number}&per_page=${perPage}&search=${search}`)
     }
 
     const paginationItems = [];

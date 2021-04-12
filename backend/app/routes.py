@@ -12,7 +12,7 @@ def get_user(user_id):
     query_result = database.fetch_user(user_id)
     return jsonify(query_result)
 
-def get_all(query_func):
+def get_all(query_func, search = None):
     try:
         page = int(request.args.get('page'))
     except:
@@ -21,12 +21,13 @@ def get_all(query_func):
         per_page = int(request.args.get('per_page'))
     except:
         per_page = 25
-    query_result, total = query_func(page, per_page)
+    query_result, total = query_func(page, per_page, search)
     return jsonify({"payload": query_result, "total_pages": ceil(total / per_page), "current_page": page, "per_page": per_page})
 
 @app.route('/company/all', methods=["GET"])
 def get_companies():
-    return get_all(database.all_companies)
+    search = request.args.get('search')
+    return get_all(database.all_companies, search)
 
 @app.route('/company/<int:company_id>', methods=["GET"])
 def get_company(company_id):
