@@ -7,10 +7,30 @@ from math import ceil
 def homepage():
     return "Hello World!"
 
+@app.route('/user/all', methods=["GET"])
+def get_users():
+    search = request.args.get('search')
+    return get_all(database.all_users, search)
+
 @app.route("/user/<int:user_id>", methods=["GET"])
 def get_user(user_id):
     query_result = database.fetch_user(user_id)
     return jsonify(query_result)
+
+@app.route('/user/edit', methods=["POST"])
+def update_user():
+    database.edit_user(request.get_json())
+    return "SUCCESS"
+
+@app.route('/user/create', methods=["POST"])
+def create_user():
+    database.create_user(request.get_json())
+    return "SUCCESS"
+
+@app.route('/user/delete', methods=["POST"])
+def delete_user():
+    database.delete_user(request.get_json()["id"])
+    return "SUCCESS"
 
 def get_all(query_func, search = None):
     try:
