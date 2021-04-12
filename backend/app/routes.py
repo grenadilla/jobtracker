@@ -96,7 +96,7 @@ def delete_posting():
     return "SUCCESS"
 
 @app.route('/application/all', methods=["GET"])
-def get_application(application_id):
+def get_applications(application_id):
     return get_all(database.all_applications)
 
 @app.route('/application/create', methods=["POST"])
@@ -114,3 +114,22 @@ def delete_application():
     database.delete_application(request.get_json()["id"])
     return "SUCCESS"
 
+@app.route('/skill/<int:skill_id>', methods=["GET"])
+def get_skill(skill_id):
+    query_result = database.fetch_skill(skill_id)
+    return jsonify(query_result)
+
+@app.route('/skill/edit', methods=["POST"])
+def update_skill():
+    database.edit_skill(request.get_json())
+    return "SUCCESS"
+
+@app.route('/skill/create', methods=["POST"])
+def create_skill():
+    database.create_skill(request.get_json())
+    return "SUCCESS"
+
+@app.route('/skill/delete', methods=["POST"])
+def delete_skill():
+    database.delete_skill(request.get_json()["id"])
+    return "SUCCESS"
