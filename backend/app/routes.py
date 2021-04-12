@@ -10,7 +10,7 @@ def homepage():
 @app.route("/user/<int:user_id>", methods=["GET"])
 def get_user(user_id):
     query_result = database.fetch_user(user_id)
-    return jsonify(query_result[0])
+    return jsonify(query_result)
 
 def get_all(query_func):
     try:
@@ -27,6 +27,16 @@ def get_all(query_func):
 @app.route('/company/all', methods=["GET"])
 def get_companies():
     return get_all(database.all_companies)
+
+@app.route('/company/<int:company_id>', methods=["GET"])
+def get_company(company_id):
+    query_result = database.fetch_company(company_id)
+    return jsonify(query_result)
+
+@app.route('/company/edit', methods=["POST"])
+def update_company():
+    database.edit_company(request.get_json())
+    return "SUCCESS"
 
 @app.route('/posting/all', methods=["GET"])
 def get_postingss():

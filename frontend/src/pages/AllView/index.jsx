@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
 import Paginator from '../../utils/pagination';
 
 const AllView = ({domain, apiDomain, attributes}) => {
@@ -11,6 +10,8 @@ const AllView = ({domain, apiDomain, attributes}) => {
     const perPage = parseInt(query.get("per_page")) || 25;
     const [totalPages, setTotalPages] = useState(1);
     const [tableData, setTableData] = useState([]);
+
+    const history = useHistory();
 
     useEffect(() => {
         const url = new URL(apiDomain);
@@ -30,9 +31,11 @@ const AllView = ({domain, apiDomain, attributes}) => {
             const cells = attributes.map((attribute) => (
                 <td key={attribute}>{entry[attribute]}</td>
             ))
-            return (<tr key={entry.id}>
-                {cells}
-            </tr>);
+            return (
+                <tr key={entry.id} style={{cursor: "pointer"}} onClick={() => history.push(`/company/${entry.id}`)}>
+                    {cells}
+                </tr>
+            );
         })
         const thCells = attributes.map((attribute) => (
             <th key={attribute}>{attribute}</th>
@@ -49,7 +52,7 @@ const AllView = ({domain, apiDomain, attributes}) => {
                 </tbody>
             </Table>
         );
-    }, [tableData, attributes]);
+    }, [tableData, attributes, history]);
 
     return (
         <Container style={{marginTop: "1rem"}}>
