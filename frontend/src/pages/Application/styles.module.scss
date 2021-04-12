@@ -1,0 +1,7 @@
+.applicationPage {
+  .applicationGrid {
+    gap: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1f 1fr;
+  }
+}
