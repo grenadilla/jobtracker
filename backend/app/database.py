@@ -46,7 +46,7 @@ def delete_company(id):
     conn.execute(f'DELETE FROM Company WHERE id = {id}')
     conn.close()
 
-def all_postings(page, per_page):
+def all_postings(page, per_page, Search = None):
     return get_all('Posting', ["id", "title", "description", "location", "link", "due_date", "posted_by"], page, per_page)
 
 def most_applicants():
@@ -64,8 +64,8 @@ def most_applicants():
                  
  
 
-def all_users(page, per_page):
-    return get_all('User', ["id", "username", "password", "name", "grade", "gpa"], page, per_page)
+def all_users(page, per_page, search = None):
+    return get_all('User', ["id", "username", "password", "name", "grade", "gpa"], page, per_page, search_attribute="username", search=search)
 
 def create_user(data) -> int:
   conn = db.connect()

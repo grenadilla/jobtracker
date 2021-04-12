@@ -101,7 +101,7 @@ def delete_posting():
     return "SUCCESS"
 
 @app.route('/application/all', methods=["GET"])
-def get_applications(application_id):
+def get_applications():
     return get_all(database.all_applications)
 
 @app.route('/application/create', methods=["POST"])
