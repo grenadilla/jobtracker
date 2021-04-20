@@ -8,6 +8,7 @@ import Company from './pages/Company';
 import MostApplicants from './pages/MostApplicants';
 import User from './pages/User';
 import TestAuth from './pages/TestAuth';
+import SignUp from './pages/SignUp';
 
 const App = () => (
   <Router>
@@ -18,6 +19,10 @@ const App = () => (
 
       <AuthenticatedRoute path="/test" exact>
         <TestAuth />
+      </AuthenticatedRoute>
+
+      <AuthenticatedRoute path="/signup" skipSignupCheck exact>
+        <SignUp />
       </AuthenticatedRoute>
 
       <Route exact path="/company">

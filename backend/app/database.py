@@ -99,6 +99,13 @@ def delete_user(id) -> None:
 	conn.execute(query)
 	conn.close()
 
+def does_user_exist(username):
+    conn = db.connect()
+    query = f'SELECT count(*) FROM User WHERE username="{username}";'
+    num_results = conn.execute(query).scalar()
+    return num_results > 0
+
+
 def fetch_posting(posting_id):
     conn = db.connect()
     query_result = conn.execute(f'SELECT * FROM Posting WHERE id = {posting_id};').fetchone()

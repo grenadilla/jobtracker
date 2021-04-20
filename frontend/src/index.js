@@ -13,6 +13,7 @@ ReactDOM.render(
       clientId="LUSkB27Ygy76poE786XZ91fCBkm4SdT6"
       redirectUri={window.location.origin}
       onRedirectCallback={({ redirectUrl }) => window.location.assign(redirectUrl || '/')}
+      audience="cs411-jobtracker-api"
     >
       <App />
     </Auth0Provider>
