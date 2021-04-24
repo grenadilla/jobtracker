@@ -114,6 +114,12 @@ def delete_posting():
     database.delete_posting(request.get_json()["id"])
     return jsonify("SUCCESS")
 
+@app.route('/application', methods=["GET"])
+#@requires_auth
+def get_application_data():
+    query_result = database.fetch_applications()
+    return jsonify(query_result)
+
 @app.route('/application/all', methods=["GET"])
 def get_applications():
     return get_all(database.all_applications)
@@ -157,3 +163,10 @@ def create_skill():
 def delete_skill():
     database.delete_skill(request.get_json()["id"])
     return jsonify("SUCCESS")
+
+
+@app.route('/application/tasks', methods=["GET"])
+#@requires_auth
+def get_application_tasks():
+    query_result = database.all_application_tasks()
+    return jsonify(query_result)
