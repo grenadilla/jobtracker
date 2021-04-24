@@ -1,5 +1,8 @@
 from app import db
 from sqlalchemy import select
+import uuid
+import hashlib
+import datetime
 
 def fetch_user(user_id):
     conn = db.connect()
@@ -100,19 +103,13 @@ def most_applicants():
     conn.close()
     return [dict(zip(["id", "name", "title", "num"], result)) for result in query_results]
  
-
 def all_users(page, per_page, search = None):
     return get_all('User', ["id", "username", "password", "name", "grade", "gpa"], page, per_page, search_attribute="username", search=search)
 
 def create_user(data) -> int:
   conn = db.connect()
 
-  # code derived from
-  # https://stackoverflow.com/questions/9594125/salt-and-hash-a-password-in-python
-  salt = uuid.uuid4().hex
-  hashed_password = hashlib.sha512(password + salt).hexdigest()
-
-  query = f'INSERT INTO User (username, password, name, grade, gpa) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["gpa"]}");'
+  query = f'INSERT INTO User (username, hashed_password, name, grade, GPA) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["GPA"]}");'
   conn.execute(query)
   query_results = conn.execute("SELECT LAST_INSERT_ID();")
   query_results = [x for x in query_results]
@@ -123,18 +120,48 @@ def create_user(data) -> int:
 
 def edit_user(data) -> None:
 	conn = db.connect()
-	query = f'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["user_id"]};'
+	query = f'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["id"]};'
 	conn.execute(query)
 	conn.close()
 
 def delete_user(id) -> None:
 	conn = db.connect()
-	query = 'DELETE FROM User WHERE id={};'.format(id)
+	query = f'DELETE FROM User WHERE id={id};'
 	conn.execute(query)
 	conn.close()
 
+def does_user_exist(username):
+    conn = db.connect()
+    query = f'SELECT count(*) FROM User WHERE username="{username}";'
+    num_results = conn.execute(query).scalar()
+    return num_results > 0
+
+
+def fetch_posting(posting_id):
+    conn = db.connect()
+    query_result = conn.execute(f'SELECT * FROM Posting WHERE id = {posting_id};').fetchone()
+    conn.close()
+    if query_result is None:
+        return None
+    return dict(zip(["id", "description", "location", "link", "due_date", "posted_by"], query_result))
+
+def create_posting(data):
+    conn = db.connect()
+    conn.execute(f'INSERT INTO Posting (title, description, location, link, due_date, posted_by) VALUES ("{data["title"]}", "{data["description"]}", "{data["location"]}", "{data["link"]}", "{data["due_date"]}", "{data["posted_by"]}")')
+    conn.close()
+
+def edit_posting(data):
+    conn = db.connect()
+    conn.execute(f'UPDATE Posting SET title = "{data["title"]}", description = "{data["description"]}" WHERE id = {data["id"]}')
+    conn.close()
+
+def delete_posting(id):
+    conn = db.connect()
+    conn.execute(f'DELETE FROM Posting WHERE id = {id}')
+    conn.close()
+
 def all_applications(page, per_page, search = None):
-    return get_all('Application', ["user_id", "posting_id", "status", "portal"], page, per_page, search_attribute="status", search=search)
+    return get_all('Application', ["id", "user_id", "posting_id", "status", "portal"], page, per_page, search_attribute="status", search=search)
 
 def fetch_application(application_id):
     conn = db.connect()
@@ -142,7 +169,7 @@ def fetch_application(application_id):
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["user_id", "posting_id", "status", "portal"], query_result))
+    return dict(zip(["id", "user_id", "posting_id", "status", "portal"], query_result))
 
 def create_application(data):
     conn = db.connect()
@@ -165,19 +192,61 @@ def fetch_skill(skill_id):
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["id", "skill_name"], query_result))
+    return dict(zip(["id", "name"], query_result))
 
 def edit_skill(data):
     conn = db.connect()
-    conn.execute(f'UPDATE Skill SET skill_name = "{data["skill_name"]}" WHERE id = {data["id"]}')
+    conn.execute(f'UPDATE Skill SET name = "{data["name"]}" WHERE id = {data["id"]}')
     conn.close()
 
 def create_skill(data):
     conn = db.connect()
-    conn.execute(f'INSERT INTO Skill (skill_name) VALUES ("{data["skill_name"]}")')
+    conn.execute(f'INSERT INTO Skill (name) VALUES ("{data["name"]}")')
     conn.close()
 
 def delete_skill(id):
     conn = db.connect()
     conn.execute(f'DELETE FROM Skill WHERE id = {id}')
     conn.close()
+
+def fetch_applications():
+    query = '''SELECT * 
+    FROM Company corp 
+    JOIN Posting p ON corp.Id = p.posted_by 
+    JOIN Application a ON p.Id = a.posting_id 
+    JOIN Application_Task at ON a.Id = at.application_id''';
+    conn = db.connect()
+    query_results = conn.execute(query).fetchall()
+    conn.close()    
+    if query_results is None:
+        return None
+    attributes = ["company_id","name","website","description","posting_id","title","description","location","link","posting_due_date","posted_by","application_id","user_id","posting_id","status","portal","position","application_id","name","task_due_date","completed"]
+    for row in query_results:
+        date = row['due_date']
+        date.strftime('%m/%d/%Y')
+    return [dict(zip(attributes, result)) for result in query_results]
+
+def all_application_tasks():
+    query = '''SELECT corp.name, p.title, p.due_date, task.name 
+    FROM Company corp JOIN Posting p 
+    ON corp.Id = p.posted_by 
+    JOIN Application a ON p.Id = a.posting_id 
+    JOIN Application_Task task ON a.Id = task.application_id'''
+    conn = db.connect()
+    query_results = conn.execute(query).fetchall()
+
+    conn.close()    
+    if query_results is None:
+        return None
+    
+    results = []
+    for row in query_results:
+        company_name, title, date, task = row
+        
+        date.strftime('%d/%m/%Y')
+        
+        result = tuple((company_name, title, date, task))
+        results.append(result)
+    
+    attributes = ['company_name', 'title', 'due_date', 'task_name']
+    return [dict(zip(attributes, result)) for result in results]

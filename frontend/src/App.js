@@ -1,10 +1,15 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import AuthenticatedRoute from './utils/AuthenticatedRoute';
 import Home from './pages/Home';
 import AllView from './pages/AllView';
 import Company from './pages/Company';
 import Posting from './pages/Posting';
 import MostApplicants from './pages/MostApplicants';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import User from './pages/User';
+import TestAuth from './pages/TestAuth';
+import SignUp from './pages/SignUp';
 
 const App = () => (
   <Router>
@@ -12,15 +17,27 @@ const App = () => (
       <Route path="/" exact>
         <Home />
       </Route>
+
+      <AuthenticatedRoute path="/test" exact>
+        <TestAuth />
+      </AuthenticatedRoute>
+
+      <AuthenticatedRoute path="/signup" skipSignupCheck exact>
+        <SignUp />
+      </AuthenticatedRoute>
+
       <Route exact path="/company">
         <AllView domain="/company" apiDomain="http://127.0.0.1:5000/company/all" attributes={["id", "name", "website", "description"]} /> 
       </Route>
+
       <Route exact path="/company/create">
         <Company create />
       </Route>
+
       <Route exact path="/company/:id">
         <Company />
       </Route>
+
       <Route exact path="/company/:id/edit">
         <Company edit />
       </Route>
@@ -40,6 +57,22 @@ const App = () => (
 
       <Route path="/most_applicants">
         <MostApplicants/>
+      </Route>
+
+      <Route exact path="/user">
+        <AllView domain="/user" apiDomain="http://127.0.0.1:5000/user/all" attributes={["id", "username", "name", "grade", "gpa"]} /> 
+      </Route>
+
+      <Route exact path="/user/create">
+        <User create />
+      </Route>
+
+      <Route exact path="/user/:id">
+        <User />
+      </Route>
+
+      <Route exact path="/user/edit">
+        <User edit />
       </Route>
     </Switch>
   </Router>
