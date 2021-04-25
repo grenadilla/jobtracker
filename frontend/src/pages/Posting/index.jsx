@@ -4,10 +4,12 @@ import AsyncSelect from 'react-select/async';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { baseUrl } from '../../utils/config';
 import dateConvert from '../../utils/dateConvert';
+import { request } from '../../utils/api';
 
-const Posting = ({edit = false, create = false}) => {
+const Posting = ({edit = false, create = false, loggedIn = false}) => {
     const { id } = useParams();
     const [postingData, setPostingData] = useState(null);
     const [formTitle, setFormTitle] = useState("");
@@ -16,6 +18,8 @@ const Posting = ({edit = false, create = false}) => {
     const [formLink, setFormLink] = useState("");
     const [formDueDate, setFormDueDate] = useState("");
     const [formPostedBy, setFormPostedBy] = useState(0);
+
+    const [applying, setApplying] = useState(false);
 
     const history = useHistory();
 
@@ -130,7 +134,44 @@ const Posting = ({edit = false, create = false}) => {
         );
     }
 
-    return <Container>{page}</Container>
+    const [portal, setPortal] = useState("");
+
+    function apply(applying = true) {
+        setApplying(false);
+        const status = applying ? "APPLIED" : "INTERESTED";
+        request("POST", `/posting/apply`, {
+            posting_id: id,
+            portal,
+            status
+        });
+    }
+
+    return (
+        <Container>
+            {page}
+            <Button onClick={() => setApplying(true)}>Apply</Button>
+            <Modal show={applying} onHide={() => setApplying(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Apply To This Posting</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Portal</Form.Label>
+                            <Form.Control type="text" value={portal} onChange={(e) => setPortal(e.target.value)}/>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setApplying(false)}>Close</Button>
+                    <Button variant="primary" onClick={() => apply(true)}>Apply</Button>
+                    <Button variant="info" onClick={() => apply(false)}>Mark Interest</Button>
+                </Modal.Footer>
+            </Modal>
+        </Container>
+    )
 }
 
 export default Posting;

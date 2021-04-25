@@ -52,6 +52,9 @@ const App = () => (
         <Company edit />
       </Route>
 
+      <AuthenticatedRoute exact path="/posting/:id">
+        <Posting loggedIn/>
+      </AuthenticatedRoute>
       <Route exact path="/posting">
         <AllView domain="/posting" apiDomain="http://127.0.0.1:5000/posting/all" attributes={["id", "title", "description", "location", "link", "due_date", "posted_by"]} />
       </Route>

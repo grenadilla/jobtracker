@@ -63,6 +63,15 @@ def all_postings(page, per_page, search = None):
         per_page,
         search_attribute="title", search=search)
 
+def all_postings_companies():
+    conn = db.connect()
+    query_results = conn.execute(f"""
+        SELECT Posting.id, title, description, location, link, due_date, name AS company, posted_by
+        FROM Posting JOIN (SELECT id, name FROM Company) as C ON Posting.posted_by = C.id
+    """).fetchall()
+    conn.close()
+    return [dict(zip(["id", "title", "description", "location", "link", "due_date", "company", "posted_by"], result)) for result in query_results]
+
 def fetch_posting(posting_id):
     conn = db.connect()
     query_result = conn.execute(f"""SELECT Posting.id, title, description, location, link, due_date, name AS company, posted_by
@@ -167,6 +176,15 @@ def fetch_application(application_id):
     if query_result is None:
         return None
     return dict(zip(["id", "user_id", "posting_id", "status", "portal"], query_result))
+
+def apply(username, data):
+    conn = db.connect()
+    user_id = conn.execute(f'SELECT id FROM User WHERE username = "{username}"').fetchone()[0]
+    conn.execute(f"""
+        INSERT INTO Application (user_id, posting_id, status, portal)
+        VALUES ("{user_id}", "{data["posting_id"]}", "{data["status"]}", "{data["portal"]}")
+    """)
+    conn.close()
 
 def create_application(data):
     conn = db.connect()

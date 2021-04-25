@@ -174,3 +174,9 @@ def delete_skill():
 def get_application_tasks():
     query_result = database.all_application_tasks()
     return jsonify(query_result)
+
+@app.route('/posting/apply', methods=["POST"])
+@requires_auth
+def apply():
+    database.apply(current_user["email"], request.get_json())
+    return jsonify("SUCCESS")
