@@ -1,43 +1,54 @@
-import React, { useState, useMemo }from 'react';
+import React, { useState, useMemo, useEffect }from 'react';
 import clsx from 'clsx';
 import Container from 'react-bootstrap/Container';
 import './styles.css';
 import data from './data.json';
+import {request} from '../../utils/api';
 
-const Applications = ({startId = -1}) => {
-    const applications = data
+const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
+    const [itemData, setItemData] = useState([]);
     const [currentId, setCurrentId] = useState(startId);
     const [search, setSearch] = useState("");
 
-    const filteredApplications = useMemo(() => {
-        return applications.filter((application) => application.name.toLowerCase().includes(search) 
-            || application.title.toLowerCase().includes(search));
-    }, [applications, search]);
+    useEffect(() => {
+        if (!loggedIn) {
+            return;
+        }
 
-    const applicationsList = filteredApplications.map((application) => {
+        request('GET', '/application/user')
+            .then((data) => setItemData(data))
+    }, []);
+
+    const filteredItems = useMemo(() => {
+        return itemData.filter((application) => application.company.toLowerCase().includes(search) 
+            || application.title.toLowerCase().includes(search));
+    }, [itemData, search]);
+
+    const applicationsList = filteredItems.map((item) => {
+        const selected = postings ? item.id === currentId : item.application_id === currentId;
         return (
-        <div className={clsx("application", application.application_id === currentId && "selectedApplication")} 
-            onClick={() => setCurrentId(application.application_id)}
-            key={application.application_id}>
-            <img src={`//logo.clearbit.com/${application.website}`} className="companyLogo"/>
+        <div className={clsx("application", selected && "selectedApplication")} 
+            onClick={() => setCurrentId(item.application_id)}
+            key={item.application_id}>
+            <img src={`//logo.clearbit.com/${item.website}`} className="companyLogo"/>
             <div className="applicationText">
-                <h3 className="applicationTitle">{application.title}</h3>
-                <h4 className="applicationCompany">{application.name}</h4>
+                <h3 className="applicationTitle">{item.title}</h3>
+                <h4 className="applicationCompany">{item.name}</h4>
             </div>
             
         </div>
         );
-
     });
 
     const currentApplication = useMemo(() => {
-        return applications.find((application) => application.application_id === currentId);
-    }, [currentId, applications]);
-
-    console.log("update");
-
+        if (postings) {
+            return itemData.find((application) =>application.posting_id);
+        }
+        return itemData.find((application) => application.application_id === currentId);
+    }, [currentId, itemData]);
+    
     return (
-        <Container className="container">
+        <Container className="applicationsPage">
             <div className="leftCol">
                 <input type="text" className={clsx("form-control", "applicationSearch")} value={search} onChange={(e) => setSearch(e.target.value)}/>
                 <div className="applications">
@@ -53,15 +64,20 @@ const Applications = ({startId = -1}) => {
                 </div>
                 <div className="currentTitle">
                     <h1>{currentApplication.title}</h1>
-                    <span className={clsx("statusPill", currentApplication.status.toLowerCase())}>{currentApplication.status}</span>
+                    {!postings &&
+                    <span className={clsx("statusPill", currentApplication.status.toLowerCase())}>{currentApplication.status}</span>}
                 </div>
-                <div className="currentSource">
+                <div className="attribute">
                     <h4>Source</h4>
                     <a href={currentApplication.link}>{currentApplication.link}</a>
                 </div>
-                <div className="currentDescription">
+                <div className="attribute">
                     <h4>Description</h4>
                     <p>{currentApplication.description}</p>
+                </div>
+                <div className="attribute">
+                    <h4>Location</h4>
+                    <p>{currentApplication.location}</p>
                 </div>
             </div>}
         </Container>

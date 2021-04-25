@@ -180,3 +180,9 @@ def get_application_tasks():
 def apply():
     database.apply(current_user["email"], request.get_json())
     return jsonify("SUCCESS")
+
+@app.route('/application/user', methods=["GET"])
+@requires_auth
+def user_applications():
+    results = database.fetch_applications(current_user["email"])
+    return jsonify(results)

@@ -1,4 +1,4 @@
-.container {
+.applicationsPage {
     height: 100vh;
     display: flex;
     flex-direction: row;
@@ -119,16 +119,12 @@
 
 .interested {
     background-color: #2185d0;
-}s
+}
 
 .offer {
     background-color: #b5cc18;
 }
 
-.currentSource {
-    margin-top: 24px;
-}
-
-.currentDescription {
+.attribute {
     margin-top: 24px;
 }

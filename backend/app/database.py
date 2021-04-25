@@ -224,21 +224,24 @@ def delete_skill(id):
     conn.execute(f'DELETE FROM Skill WHERE id = {id}')
     conn.close()
 
-def fetch_applications():
-    query = '''SELECT * 
+def fetch_applications(username):
+    conn = db.connect()
+    user_id = conn.execute(f'SELECT id FROM User WHERE username = "{username}"').fetchone()[0]
+    query = f'''SELECT
+    corp.name, a.id, corp.website, p.title, p.description, p.link, p.location, a.portal, a.status
     FROM Company corp 
     JOIN Posting p ON corp.Id = p.posted_by 
     JOIN Application a ON p.Id = a.posting_id 
-    JOIN Application_Task at ON a.Id = at.application_id''';
-    conn = db.connect()
+    WHERE a.user_id = {user_id}
+    '''
     query_results = conn.execute(query).fetchall()
     conn.close()    
     if query_results is None:
         return None
-    attributes = ["company_id","name","website","description","posting_id","title","description","location","link","posting_due_date","posted_by","application_id","user_id","posting_id","status","portal","position","application_id","name","task_due_date","completed"]
-    for row in query_results:
-        date = row['due_date']
-        date.strftime('%m/%d/%Y')
+    attributes = ['company', 'application_id', 'website', 'title', 'description', 'link', 'location', 'portal', 'status']
+    #for row in query_results:
+    #    date = row['due_date']
+    #    date.strftime('%m/%d/%Y')
     return [dict(zip(attributes, result)) for result in query_results]
 
 def all_application_tasks():

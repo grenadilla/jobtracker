@@ -28,6 +28,10 @@ const App = () => (
         <SignUp />
       </AuthenticatedRoute>
 
+      <AuthenticatedRoute path="/applications" exact>
+        <Applications loggedIn />
+      </AuthenticatedRoute>
+
       <Route path="/applications" exact>
         <Applications />
       </Route>
