@@ -65,11 +65,13 @@ def all_postings(page, per_page, search = None):
 
 def fetch_posting(posting_id):
     conn = db.connect()
-    query_result = conn.execute(f'SELECT * FROM Posting WHERE id = {posting_id}').fetchone()
+    query_result = conn.execute(f"""SELECT Posting.id, title, description, location, link, due_date, name AS company, posted_by
+        FROM Posting JOIN (SELECT id, name FROM Company) as C ON Posting.posted_by = C.id 
+        WHERE Posting.id = {posting_id}""").fetchone()
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["id", "title", "description", "location", "link", "due_date", "posted_by"], query_result))
+    return dict(zip(["id", "title", "description", "location", "link", "due_date", "company", "posted_by"], query_result))
 
 def edit_posting(data):
     print(data)
@@ -144,15 +146,6 @@ def does_user_exist(username):
     query = f'SELECT count(*) FROM User WHERE username="{username}";'
     num_results = conn.execute(query).scalar()
     return num_results > 0
-
-
-def fetch_posting(posting_id):
-    conn = db.connect()
-    query_result = conn.execute(f'SELECT * FROM Posting WHERE id = {posting_id};').fetchone()
-    conn.close()
-    if query_result is None:
-        return None
-    return dict(zip(["id", "title", "description", "location", "link", "due_date", "posted_by"], query_result))
 
 def create_posting(data):
     conn = db.connect()

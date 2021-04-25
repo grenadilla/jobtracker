@@ -32,7 +32,7 @@ const Posting = ({edit = false, create = false}) => {
                     setFormLocation(data.location);
                     setFormLink(data.link);
                     setFormDueDate(data.due_date);
-                    setFormPostedBy(data.posted_by);
+                    setFormPostedBy({ value: data.posted_by, label: data.company });
                 })
                 .catch((err) => console.log(err));
         }
@@ -74,64 +74,25 @@ const Posting = ({edit = false, create = false}) => {
         }).then(() => history.push(redirect));
     }
 
-    console.log(formPostedBy);
-
     let page = "Loading...";
-    if (postingData) {
-        if (edit) {
-            const promiseOptions = (inputValue) => fetch(`${baseUrl}/company/ids?search=${inputValue}`).then(data => data.json());
-            page = (
-                <>
-                <Form>
-                    <Form.Group>
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control type="text" value={formTitle} onChange={(e) => setFormTitle(e.target.value)}/>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control as="textarea" value={formDescription} onChange={(e) => setFormDescription(e.target.value)} />
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Location</Form.Label>
-                        <Form.Control type="text" value={formLocation} onChange={(e) => setFormLocation(e.target.value)}/>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Link</Form.Label>
-                        <Form.Control type="text" value={formLink} onChange={(e) => setFormLink(e.target.value)}/>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Due Date</Form.Label>
-                        <Form.Control type="text" value={formDueDate} onChange={(e) => setFormDueDate(e.target.value)}/>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Posted By</Form.Label>
-                        <AsyncSelect defaultOptions loadOptions={promiseOptions} value={formPostedBy} onChange={(value) => setFormPostedBy(value)}/>
-                    </Form.Group>
-                </Form>
+
+    if (postingData && !edit) {
+        page = (
+            <>
+                <h1>ID: {postingData.id}</h1>
+                <h1>Title: {postingData.title}</h1>
                 <div>
-                    <Button variant="success" disabled={!submittable} onClick={() => apiEdit(false)}> Submit</Button>
-                    <Button variant="warning" onClick={() => history.push(`/posting/${id}`)}>Cancel</Button>
+                    <Link to={`/posting/${id}/edit`} style={{marginRight: 10}}>Edit</Link>
+                    <Link to={`/posting/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>
                 </div>
-                </>
-            );
-        } else {
-            page = (
-                <>
-                    <h1>ID: {postingData.id}</h1>
-                    <h1>Title: {postingData.title}</h1>
-                    <div>
-                        <Link to={`/posting/${id}/edit`} style={{marginRight: 10}}>Edit</Link>
-                        <Link to={`/posting/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>
-                    </div>
-                    <p>{postingData.description}</p>
-                    <h2>Location: {postingData.location}</h2>
-                    <h2>Link: {postingData.link}</h2>
-                    <h2>Due Date: {postingData.due_date}</h2>
-                    <h2>Posted By: {postingData.posted_by}</h2>
-                </>
-            )
-        }
-    } else if (create) {
+                <p>{postingData.description}</p>
+                <h2>Location: {postingData.location}</h2>
+                <h2>Link: {postingData.link}</h2>
+                <h2>Due Date: {postingData.due_date}</h2>
+                <h2>Posted By: {postingData.company}</h2>
+            </>
+        )
+    } else if (edit || create) {
         const promiseOptions = (inputValue) => fetch(`${baseUrl}/company/ids?search=${inputValue}`).then(data => data.json());
         page = (
             <>
@@ -162,7 +123,7 @@ const Posting = ({edit = false, create = false}) => {
                     </Form.Group>
                 </Form>
                 <div>
-                    <Button variant="success" disabled={!submittable} onClick={() => apiEdit(true)}> Submit</Button>
+                    <Button variant="success" disabled={!submittable} onClick={() => apiEdit(create)}> Submit</Button>
                     <Button variant="warning" onClick={() => history.push(`/posting/${id}`)}>Cancel</Button>
                 </div>
             </>
