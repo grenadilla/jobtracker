@@ -1,0 +1,95 @@
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.application {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100px;
+    cursor: pointer;
+    border-radius: 4px;
+    direction: ltr;
+}
+
+.application:hover {
+    background-color: #EEEEEE;
+}
+
+.selectedApplication {
+    background-color: #CCCCCC;
+}
+
+.application:hover .selectedArrow {
+    fill: #EEEEEE;
+}
+
+.selectedArrow {
+    position: absolute;
+    width: 64px;
+    left: 100%;
+    fill: #CCCCCC;
+}
+
+.companyLogo {
+    height: 100%;
+    padding: 8px;
+}
+
+.applicationText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 80%;
+}
+
+.applicationCompany {
+    font-size: 16px;
+}
+
+.applications {
+    height: 100%;
+    direction: rtl;
+    overflow-y: scroll;
+}
+
+.applicationDetail {
+    padding: 48px;
+    flex: 1;
+}
+
+.currentLogo {
+    height: 100%;
+    padding-right: 8px;
+}
+
+.currentCompany {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 64px;
+}
+
+.currentTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.statusPill {
+    background-color: lightgreen;
+    border-radius: 16px;
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+.currentSource {
+    margin-top: 24px;
+}
+
+.currentDescription {
+    margin-top: 24px;
+}
