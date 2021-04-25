@@ -1,0 +1,29 @@
+.task {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #708090;
+    margin: 8px;
+    padding: 8px;
+    height: 80px;
+    color: black;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.task:hover {
+    height: 88px;
+    margin: 4px;
+}
+
+.completed {
+    color: silver;
+    background-color: #F2F2F2;
+}
+
+.taskName {
+    font-size: 24px;
+    margin-bottom: 4px;
+}

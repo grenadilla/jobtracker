@@ -4,9 +4,9 @@ import Container from 'react-bootstrap/Container';
 import './styles.css';
 import data from './data.json';
 
-const Applications = () => {
+const Applications = ({startId = -1}) => {
     const applications = data
-    const [currentId, setCurrentId] = useState(-1);
+    const [currentId, setCurrentId] = useState(startId);
     const [search, setSearch] = useState("");
 
     const filteredApplications = useMemo(() => {

@@ -11,6 +11,7 @@ import User from './pages/User';
 import TestAuth from './pages/TestAuth';
 import SignUp from './pages/SignUp';
 import Applications from './pages/Applications';
+import Calendar from './pages/Calendar';
 
 const App = () => (
   <Router>
@@ -29,6 +30,10 @@ const App = () => (
 
       <Route path="/applications" exact>
         <Applications />
+      </Route>
+
+      <Route path="/calendar" exact>
+        <Calendar />
       </Route>
 
       <Route exact path="/company">
