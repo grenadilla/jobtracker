@@ -32,7 +32,9 @@ const Applications = ({startId = -1}) => {
 
     const currentApplication = useMemo(() => {
         return applications.find((application) => application.application_id === currentId);
-    }, [currentId, applications])
+    }, [currentId, applications]);
+
+    console.log("update");
 
     return (
         <Container className="container">
@@ -51,7 +53,7 @@ const Applications = ({startId = -1}) => {
                 </div>
                 <div className="currentTitle">
                     <h1>{currentApplication.title}</h1>
-                    <span className="statusPill">{currentApplication.status}</span>
+                    <span className={clsx("statusPill", currentApplication.status.toLowerCase())}>{currentApplication.status}</span>
                 </div>
                 <div className="currentSource">
                     <h4>Source</h4>

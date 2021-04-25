@@ -94,10 +94,35 @@
 }
 
 .statusPill {
-    background-color: lightgreen;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    width: 120px;
+    height: 28px;
     border-radius: 16px;
     padding-right: 8px;
     padding-left: 8px;
+}
+
+.accepted {
+    background-color: #21ba45;
+}
+
+.rejected {
+    background-color: #f2711c;
+}
+
+.applied {
+    background-color: #fbbd08;
+}
+
+.interested {
+    background-color: #2185d0;
+}s
+
+.offer {
+    background-color: #b5cc18;
 }
 
 .currentSource {
