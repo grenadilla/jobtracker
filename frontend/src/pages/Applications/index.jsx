@@ -7,8 +7,14 @@ import data from './data.json';
 const Applications = () => {
     const applications = data
     const [currentId, setCurrentId] = useState(-1);
+    const [search, setSearch] = useState("");
 
-    const applicationsList = applications.map((application) => {
+    const filteredApplications = useMemo(() => {
+        return applications.filter((application) => application.name.toLowerCase().includes(search) 
+            || application.title.toLowerCase().includes(search));
+    }, [applications, search]);
+
+    const applicationsList = filteredApplications.map((application) => {
         return (
         <div className={clsx("application", application.application_id === currentId && "selectedApplication")} 
             onClick={() => setCurrentId(application.application_id)}
@@ -22,12 +28,6 @@ const Applications = () => {
         </div>
         );
 
-        /*
-            {application.application_id == id &&
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-triangle" width='100' height='100' className={"selectedArrow"}>
-                <path d="M 95,50 5,95 5,5 z"/>
-            </svg>}
-        */
     });
 
     const currentApplication = useMemo(() => {
@@ -36,9 +36,13 @@ const Applications = () => {
 
     return (
         <Container className="container">
-            <div className="applications">
-                {applicationsList}
+            <div className="leftCol">
+                <input type="text" className={clsx("form-control", "applicationSearch")} value={search} onChange={(e) => setSearch(e.target.value)}/>
+                <div className="applications">
+                    {applicationsList}
+                </div>
             </div>
+            
             {currentId > 0 &&
             <div className="applicationDetail">
                 <div className="currentCompany">
