@@ -34,6 +34,14 @@ def fetch_company(company_id):
         return None
     return dict(zip(["id", "name", "website", "description"], query_result))
 
+def company_ids(search):
+    if search is None:
+        search = ''
+    conn = db.connect()
+    query_results = conn.execute(f'SELECT name, id FROM Company WHERE name LIKE "%%{search}%%"').fetchall()
+    conn.close()
+    return [{"value": entry[1], "label": entry[0]} for entry in query_results]
+
 def edit_company(data):
     conn = db.connect()
     conn.execute(f'UPDATE Company SET name = "{data["name"]}", description = "{data["description"]}" WHERE id = {data["id"]}')
@@ -64,13 +72,14 @@ def fetch_posting(posting_id):
     return dict(zip(["id", "title", "description", "location", "link", "due_date", "posted_by"], query_result))
 
 def edit_posting(data):
+    print(data)
     conn = db.connect()
     query = f"""
-    'UPDATE Posting 
+    UPDATE Posting
     SET title = "{data["title"]}", description = "{data["description"]}",
     location = "{data["location"]}", link = "{data["link"]}",
     due_date = "{data["due_date"]}", posted_by = {data["posted_by"]}
-    WHERE id = {data["id"]}'
+    WHERE id = {data["id"]};
     """
     conn.execute(query)
     conn.close()
@@ -143,16 +152,11 @@ def fetch_posting(posting_id):
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["id", "description", "location", "link", "due_date", "posted_by"], query_result))
+    return dict(zip(["id", "title", "description", "location", "link", "due_date", "posted_by"], query_result))
 
 def create_posting(data):
     conn = db.connect()
     conn.execute(f'INSERT INTO Posting (title, description, location, link, due_date, posted_by) VALUES ("{data["title"]}", "{data["description"]}", "{data["location"]}", "{data["link"]}", "{data["due_date"]}", "{data["posted_by"]}")')
-    conn.close()
-
-def edit_posting(data):
-    conn = db.connect()
-    conn.execute(f'UPDATE Posting SET title = "{data["title"]}", description = "{data["description"]}" WHERE id = {data["id"]}')
     conn.close()
 
 def delete_posting(id):

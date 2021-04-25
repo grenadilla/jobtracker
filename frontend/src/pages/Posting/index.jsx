@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
+import AsyncSelect from 'react-select/async';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { baseUrl } from '../../utils/config';
+import dateConvert from '../../utils/dateConvert';
 
 const Posting = ({edit = false, create = false}) => {
     const { id } = useParams();
@@ -18,7 +21,7 @@ const Posting = ({edit = false, create = false}) => {
 
     useEffect(() => {
         if (!create) {
-            const apiDomain = `http://127.0.0.1:5000/posting/${id}`
+            const apiDomain = `${baseUrl}/posting/${id}`
             const url = new URL(apiDomain);
             fetch(url)
                 .then((response) => response.json())
@@ -44,11 +47,11 @@ const Posting = ({edit = false, create = false}) => {
             description: formDescription,
             location: formLocation,
             link: formLink,
-            due_date: formDueDate,
-            posted_by: formPostedBy
+            due_date: dateConvert(new Date(formDueDate)),
+            posted_by: formPostedBy["value"]
         }
 
-        const url = create ? "http://127.0.0.1:5000/posting/create" : "http://127.0.0.1:5000/posting/edit";
+        const url = create ? `${baseUrl}/posting/create` : `${baseUrl}/posting/edit`;
         const redirect = create ? '/posting' : `/posting/${id}`;
         fetch(url, { method: 'post', 
             headers: {
@@ -60,7 +63,7 @@ const Posting = ({edit = false, create = false}) => {
     }
 
     function apiDelete() {
-        const url = "http://127.0.0.1:5000/posting/delete";
+        const url = `${baseUrl}/posting/delete`;
         const redirect = '/posting';
         fetch(url, { method: 'post', 
             headers: {
@@ -71,11 +74,12 @@ const Posting = ({edit = false, create = false}) => {
         }).then(() => history.push(redirect));
     }
 
-    console.log(postingData);
+    console.log(formPostedBy);
 
     let page = "Loading...";
     if (postingData) {
         if (edit) {
+            const promiseOptions = (inputValue) => fetch(`${baseUrl}/company/ids?search=${inputValue}`).then(data => data.json());
             page = (
                 <>
                 <Form>
@@ -101,7 +105,7 @@ const Posting = ({edit = false, create = false}) => {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Posted By</Form.Label>
-                        <Form.Control type="number" value={formPostedBy} onChange={(e) => setFormPostedBy(e.target.value)}/>
+                        <AsyncSelect defaultOptions loadOptions={promiseOptions} value={formPostedBy} onChange={(value) => setFormPostedBy(value)}/>
                     </Form.Group>
                 </Form>
                 <div>
@@ -128,6 +132,7 @@ const Posting = ({edit = false, create = false}) => {
             )
         }
     } else if (create) {
+        const promiseOptions = (inputValue) => fetch(`${baseUrl}/company/ids?search=${inputValue}`).then(data => data.json());
         page = (
             <>
                 <Form>
@@ -153,7 +158,7 @@ const Posting = ({edit = false, create = false}) => {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Posted By</Form.Label>
-                        <Form.Control type="number" value={formPostedBy} onChange={(e) => setFormPostedBy(e.target.value)}/>
+                        <AsyncSelect defaultOptions loadOptions={promiseOptions} value={formPostedBy} onChange={(value) => setFormPostedBy(value)}/>                    
                     </Form.Group>
                 </Form>
                 <div>

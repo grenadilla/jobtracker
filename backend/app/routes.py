@@ -83,6 +83,11 @@ def delete_company():
     database.delete_company(request.get_json()["id"])
     return jsonify("SUCCESS")
 
+@app.route('/company/ids', methods=["GET"])
+def company_ids():
+    search = request.args.get('search')
+    return jsonify(database.company_ids(search))
+
 @app.route('/posting/all', methods=["GET"])
 def get_postings():
     search = request.args.get('search')
@@ -91,13 +96,11 @@ def get_postings():
 @app.route('/most_applicants', methods=["GET"])
 def most_applicants():
     query_results = database.most_applicants()
-    print(query_results)
     return jsonify(query_results)
 
 @app.route('/posting/<int:posting_id>', methods=["GET"])
 def get_posting(posting_id):
     query_result = database.fetch_posting(posting_id)
-    print(query_result)
     return jsonify(query_result)
 
 @app.route('/posting/create', methods=["POST"])
