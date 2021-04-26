@@ -2,11 +2,12 @@ import React, { useState, useMemo, useEffect }from 'react';
 import clsx from 'clsx';
 import Container from 'react-bootstrap/Container';
 import './styles.css';
-import data from './data.json';
-import {request} from '../../utils/api';
+import { request } from '../../utils/api';
+import Task from '../../utils/Task';
 
 const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
     const [itemData, setItemData] = useState([]);
+    const [tasks, setTasks] = useState([]);
     const [currentId, setCurrentId] = useState(startId);
     const [search, setSearch] = useState("");
 
@@ -18,6 +19,15 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
         request('GET', '/application/user')
             .then((data) => setItemData(data))
     }, []);
+
+    useEffect(() => {
+        if (!loggedIn || currentId <= 0) {
+            return;
+        }
+
+        request('GET', `/application/tasks/${currentId}`)
+            .then((data) => setTasks(data));
+    }, [currentId]);
 
     const filteredItems = useMemo(() => {
         return itemData.filter((application) => application.company.toLowerCase().includes(search) 
@@ -46,6 +56,9 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
         }
         return itemData.find((application) => application.application_id === currentId);
     }, [currentId, itemData]);
+
+    // Note task display is untested - have to add a way to create tasks first
+    const taskDisplay = tasks.map((task) => <Task {...task} />)
     
     return (
         <Container className="applicationsPage">
@@ -60,7 +73,7 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
             <div className="applicationDetail">
                 <div className="currentCompany">
                     <img src={`//logo.clearbit.com/${currentApplication.website}`} className="currentLogo"/>
-                    <h3>{currentApplication.name}</h3>
+                    <h3>{currentApplication.company}</h3>
                 </div>
                 <div className="currentTitle">
                     <h1>{currentApplication.title}</h1>
@@ -78,6 +91,10 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
                 <div className="attribute">
                     <h4>Location</h4>
                     <p>{currentApplication.location}</p>
+                </div>
+
+                <div className="tasks">
+                    {taskDisplay}
                 </div>
             </div>}
         </Container>

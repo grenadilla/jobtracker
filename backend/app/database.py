@@ -244,13 +244,20 @@ def fetch_applications(username):
     #    date.strftime('%m/%d/%Y')
     return [dict(zip(attributes, result)) for result in query_results]
 
-def all_application_tasks():
-    query = '''SELECT corp.name, p.title, p.due_date, task.name 
+def all_application_tasks(username = None, application_id = None):
+    conn = db.connect()
+    filter = ""
+    if username is not None:
+        user_id = conn.execute(f'SELECT id FROM User WHERE username = "{username}"').fetchone()[0]
+        filter = f"WHERE a.user_id = {user_id}"
+    elif application_id is not None:
+        filter = f"WHERE a.id = {application_id}"
+    query = f'''SELECT corp.name, p.title, p.due_date, task.name 
     FROM Company corp JOIN Posting p 
     ON corp.Id = p.posted_by 
     JOIN Application a ON p.Id = a.posting_id 
-    JOIN Application_Task task ON a.Id = task.application_id'''
-    conn = db.connect()
+    JOIN Application_Task task ON a.Id = task.application_id
+    {filter}'''
     query_results = conn.execute(query).fetchall()
 
     conn.close()    

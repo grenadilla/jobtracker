@@ -170,9 +170,14 @@ def delete_skill():
 
 
 @app.route('/application/tasks', methods=["GET"])
-#@requires_auth
-def get_application_tasks():
-    query_result = database.all_application_tasks()
+@requires_auth
+def get_user_tasks():
+    query_result = database.all_application_tasks(username=current_user["email"])
+    return jsonify(query_result)
+
+@app.route('/application/tasks/<int:application_id>', methods=["GET"])
+def get_application_tasks(application_id):
+    query_result = database.all_application_tasks(application_id=application_id)
     return jsonify(query_result)
 
 @app.route('/posting/apply', methods=["POST"])
