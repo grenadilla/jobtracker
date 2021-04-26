@@ -5,6 +5,7 @@ import './styles.css';
 const Task = ({name, title, company, application_id, due_date, completed}) => {
     const dueDateResult = completed ? "Completed" : due_date;
     return (
+        <div className="taskContainer">
         <div className={clsx("task", completed && "completed")}>
             <div>
                 <h3 className="taskName">{name}</h3>
@@ -15,6 +16,7 @@ const Task = ({name, title, company, application_id, due_date, completed}) => {
             <span>
                 {dueDateResult}
             </span>
+        </div>
         </div>
     )
 }

@@ -1,8 +1,12 @@
 import React, { useState, useMemo, useEffect }from 'react';
 import clsx from 'clsx';
 import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import './styles.css';
 import { request } from '../../utils/api';
+import dateConvert from '../../utils/dateConvert';
 import Task from '../../utils/Task';
 
 const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
@@ -10,6 +14,9 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
     const [tasks, setTasks] = useState([]);
     const [currentId, setCurrentId] = useState(startId);
     const [search, setSearch] = useState("");
+
+    const [creatingTask, setCreatingTask] = useState(false);
+    const [taskFormData, setTaskFormData] = useState({name: "", due_date: ""});
 
     useEffect(() => {
         if (!loggedIn) {
@@ -27,7 +34,7 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
 
         request('GET', `/application/tasks/${currentId}`)
             .then((data) => setTasks(data));
-    }, [currentId]);
+    }, [currentId, creatingTask]);
 
     const filteredItems = useMemo(() => {
         return itemData.filter((application) => application.company.toLowerCase().includes(search) 
@@ -59,6 +66,20 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
 
     // Note task display is untested - have to add a way to create tasks first
     const taskDisplay = tasks.map((task) => <Task {...task} />)
+
+    function createTask() {
+        const body = {
+            name: taskFormData["name"],
+            due_date: dateConvert(new Date(taskFormData["due_date"])),
+            application_id: currentId, 
+            completed: false
+        };
+        request('POST', '/task/create', body)
+            .then(() => {
+                setTaskFormData({name: "", due_date: ""});
+                setCreatingTask(false);
+            });
+    }
     
     return (
         <Container className="applicationsPage">
@@ -96,6 +117,31 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
                 <div className="tasks">
                     {taskDisplay}
                 </div>
+                
+                <Button onClick={() => setCreatingTask(true)}>Add Task</Button>
+                <Modal show={creatingTask} onHide={() => setCreatingTask(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add A Task</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control type="text" value={taskFormData["name"]} onChange={(e) => setTaskFormData({...taskFormData, name: e.target.value})}/>
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Due Date</Form.Label>
+                                <Form.Control type="text" value={taskFormData["due_date"]} onChange={(e) => setTaskFormData({...taskFormData, due_date: e.target.value})}/>
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setCreatingTask(false)}>Close</Button>
+                        <Button variant="primary" onClick={createTask}>Add Task</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>}
         </Container>
     )

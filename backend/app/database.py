@@ -273,5 +273,19 @@ def all_application_tasks(username = None, application_id = None):
         result = tuple((company_name, title, date, task))
         results.append(result)
     
-    attributes = ['company_name', 'title', 'due_date', 'task_name']
+    attributes = ['company', 'title', 'due_date', 'name']
     return [dict(zip(attributes, result)) for result in results]
+
+def create_task(data):
+    conn = db.connect()
+    position = conn.execute(f'SELECT MAX(position) FROM Application_Task WHERE application_id = {data["application_id"]}').fetchone()[0]
+    if position is not None:
+        position += 1
+    else:
+        position = 1
+    conn.execute(f"""
+        INSERT INTO Application_Task
+        (position, application_id, name, due_date, completed) 
+        VALUES ({position}, {data["application_id"]}, "{data["name"]}", "{data["due_date"]}", {data["completed"]})
+    """)
+    conn.close()

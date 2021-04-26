@@ -1,3 +1,12 @@
+.taskContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% + 20px);
+    height: 100px;
+    margin: 8px;
+}
+
 .task {
     display: flex;
     flex-direction: row;
@@ -5,17 +14,16 @@
     align-items: center;
     border-radius: 8px;
     background-color: #708090;
-    margin: 8px;
+    height: 90%;
+    width: calc(100% - 20px);
     padding: 8px;
-    height: 80px;
     color: black;
     cursor: pointer;
-    box-sizing: border-box;
 }
 
 .task:hover {
-    height: 88px;
-    margin: 4px;
+    height: 95%;
+    width: 100%;
 }
 
 .completed {

@@ -191,3 +191,9 @@ def apply():
 def user_applications():
     results = database.fetch_applications(current_user["email"])
     return jsonify(results)
+
+@app.route('/task/create', methods=["POST"])
+@requires_auth
+def create_task():
+    database.create_task(request.get_json())
+    return jsonify("SUCCESS")
