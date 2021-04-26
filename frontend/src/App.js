@@ -36,9 +36,9 @@ const App = () => (
         <Applications />
       </Route>
 
-      <Route path="/calendar" exact>
+      <AuthenticatedRoute path="/calendar" exact>
         <Calendar />
-      </Route>
+      </AuthenticatedRoute>
 
       <Route exact path="/company">
         <AllView domain="/company" apiDomain="http://127.0.0.1:5000/company/all" attributes={["id", "name", "website", "description"]} /> 
