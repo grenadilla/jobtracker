@@ -21,6 +21,15 @@ const Home = () => (
     <Row>
       <Link to="/most_applicants">Jeffrey's Advanced Query</Link>
     </Row>
+    <Row>
+      <Link to="/profile">Edit Profile</Link>
+    </Row>
+    <Row>
+      <Link to="/login">Login</Link>
+    </Row>
+    <Row>
+      <Link to="/logout">Logout</Link>
+    </Row>
   </Container>
 );
 

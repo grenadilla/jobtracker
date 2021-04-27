@@ -12,6 +12,8 @@ import TestAuth from './pages/TestAuth';
 import SignUp from './pages/SignUp';
 import Applications from './pages/Applications';
 import Calendar from './pages/Calendar';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
 
 const App = () => (
   <Router>
@@ -24,8 +26,20 @@ const App = () => (
         <TestAuth />
       </AuthenticatedRoute>
 
+      <AuthenticatedRoute path="/login" exact>
+        <Login />
+      </AuthenticatedRoute>
+
+      <Route path="/logout" exact>
+        <Logout />
+      </Route>
+
       <AuthenticatedRoute path="/signup" skipSignupCheck exact>
         <SignUp />
+      </AuthenticatedRoute>
+
+      <AuthenticatedRoute path="/profile" exact>
+        <SignUp update />
       </AuthenticatedRoute>
 
       <AuthenticatedRoute path="/applications" exact>

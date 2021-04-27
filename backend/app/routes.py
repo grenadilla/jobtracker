@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import json, request, jsonify
 from app import app
 from app import database
 from math import ceil
@@ -22,9 +22,17 @@ def get_user(user_id):
     query_result = database.fetch_user(user_id)
     return jsonify(query_result)
 
+@app.route("/user", methods=["GET"])
+@requires_auth
+def get_current_user():
+    user_id = database.get_user_id_from_email(current_user['email'])
+    return get_user(user_id)
+
 @app.route('/user/edit', methods=["POST"])
+@requires_auth
 def update_user():
-    database.edit_user(request.get_json())
+    user_id = database.get_user_id_from_email(current_user['email'])
+    database.edit_user(user_id, request.get_json())
     return jsonify("SUCCESS")
 
 @app.route('/user/create', methods=["POST"])
@@ -45,6 +53,30 @@ def delete_user():
 def does_user_exist():
     exists = database.does_user_exist(current_user['email'])
     return jsonify(exists)
+
+@app.route('/user/addskills', methods=["POST"])
+@requires_auth
+def add_user_skills():
+    data = request.get_json()
+    user_id = database.get_user_id_from_email(current_user['email'])
+    database.add_user_skills(user_id, data['skillIds'])
+    return jsonify("SUCCESS")
+
+@app.route('/user/skills', methods=["GET"])
+@requires_auth
+def get_current_user_skills():
+    user_id = database.get_user_id_from_email(current_user['email'])
+    skills = database.get_user_skills(user_id)
+    return jsonify(skills)
+
+@app.route('/user/updateskills', methods=["POST"])
+@requires_auth
+def update_user_skills():
+    data = request.get_json()
+    user_id = database.get_user_id_from_email(current_user['email'])
+    database.remove_all_user_skills(user_id)
+    database.add_user_skills(user_id, data['skillIds'])
+    return jsonify("SUCESS")
 
 def get_all(query_func, search = None):
     try:
@@ -147,6 +179,10 @@ def update_application():
 def delete_application():
     database.delete_application(request.get_json()["id"])
     return jsonify("SUCCESS")
+
+@app.route('/skill/all', methods=["GET"])
+def get_all_skills():
+    return jsonify(database.all_skills())
 
 @app.route('/skill/<int:skill_id>', methods=["GET"])
 def get_skill(skill_id):

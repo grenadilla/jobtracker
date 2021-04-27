@@ -4,13 +4,19 @@ import uuid
 import hashlib
 import datetime
 
+def get_user_id_from_email(email):
+    conn = db.connect()
+    query_result = conn.execute(f'SELECT id FROM User WHERE username = "{email}"').fetchone()
+    conn.close()
+    return query_result[0]
+
 def fetch_user(user_id):
     conn = db.connect()
     query_result = conn.execute(f'SELECT * FROM User WHERE id = {user_id};').fetchone()
     conn.close()
     if query_result is None:
         return None
-    return dict(zip(["id", "username", "password", "name", "grade", "GPA"], query_result))
+    return dict(zip(["id", "username", "password", "name", "grade", "gpa"], query_result))
 
 def get_all(table, attributes, page, per_page, search_attribute = None, search = None):
     conn = db.connect()
@@ -129,7 +135,7 @@ def all_users(page, per_page, search = None):
 def create_user(data) -> int:
   conn = db.connect()
 
-  query = f'INSERT INTO User (username, hashed_password, name, grade, GPA) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["GPA"]}");'
+  query = f'INSERT INTO User (username, hashed_password, name, grade, gpa) VALUES("{data["username"]}", "{data["password"]}", "{data["name"]}", "{data["grade"]}", "{data["gpa"]}");'
   conn.execute(query)
   query_results = conn.execute("SELECT LAST_INSERT_ID();")
   query_results = [x for x in query_results]
@@ -138,9 +144,9 @@ def create_user(data) -> int:
 
   return user_id
 
-def edit_user(data) -> None:
+def edit_user(user_id, data) -> None:
 	conn = db.connect()
-	query = f'UPDATE User SET grade = "{data["grade"]}" WHERE id = {data["id"]};'
+	query = f'UPDATE User SET name = "{data["name"]}", grade = "{data["grade"]}", gpa = "{data["gpa"]}" WHERE id = {user_id};'
 	conn.execute(query)
 	conn.close()
 
@@ -193,13 +199,21 @@ def create_application(data):
 
 def edit_application(data):
     conn = db.connect()
-    conn.execute(f'UPDATE Application SET status = "{data["status"]}" WHERE id = {data["id"]}')
+    conn.execute(f'UPDATE Application SET status = "{data["status"]}", portal = "{data["portal"]}" WHERE id = {data["id"]}')
     conn.close()
 
 def delete_application(id):
     conn = db.connect()
     conn.execute(f'DELETE FROM Application WHERE id = {id}')
     conn.close()
+
+def all_skills():
+    conn = db.connect()
+    query_result = conn.execute(f'SELECT * FROM Skill')
+    conn.close()
+    if query_result is None:
+        return []
+    return [dict(zip(["id", "name"], result)) for result in query_result]
 
 def fetch_skill(skill_id):
     conn = db.connect()
@@ -222,6 +236,23 @@ def create_skill(data):
 def delete_skill(id):
     conn = db.connect()
     conn.execute(f'DELETE FROM Skill WHERE id = {id}')
+    conn.close()
+
+def add_user_skills(user_id, skill_ids):
+    rows = [f'({user_id}, {skill_id})' for skill_id in skill_ids]
+    conn = db.connect()
+    conn.execute(f'INSERT INTO User_Skill(user_id, skill_id) VALUES {", ".join(rows)}')
+    conn.close()
+
+def get_user_skills(user_id):
+    conn = db.connect()
+    results = conn.execute(f'SELECT skill_id from User_Skill WHERE user_id={user_id}')
+    conn.close()
+    return [result[0] for result in results]
+
+def remove_all_user_skills(user_id):
+    conn = db.connect()
+    conn.execute(f'DELETE FROM User_Skill WHERE user_id={user_id}')
     conn.close()
 
 def fetch_applications(username):
