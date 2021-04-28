@@ -24,6 +24,11 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
             .then((data) => setItemData(data))
     }
 
+    const fetchApplicationTasks = applicationId => {
+        request('GET', `/application/tasks/${applicationId}`)
+            .then((data) => setTasks(data));
+    }
+
     useEffect(() => {
         if (!loggedIn) {
             return;
@@ -37,8 +42,7 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
             return;
         }
 
-        request('GET', `/application/tasks/${currentId}`)
-            .then((data) => setTasks(data));
+        fetchApplicationTasks(currentId);
     }, [currentId, creatingTask]);
 
     const filteredItems = useMemo(() => {
@@ -70,7 +74,7 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
     }, [currentId, itemData]);
 
     // Note task display is untested - have to add a way to create tasks first
-    const taskDisplay = tasks.map((task) => <Task {...task} />)
+    const taskDisplay = tasks.map((task) => <Task application_id={currentId} {...task} onUpdate={() => fetchApplicationTasks(currentId)} />)
 
     function createTask() {
         const body = {
@@ -103,7 +107,7 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
                     variant="outline-primary"
                     onSubmit={() => fetchApplications()}
                 >
-                    <span class="material-icons">edit</span>
+                    <span className="material-icons">edit</span>
                     Edit Application
                 </ApplyButton>
 

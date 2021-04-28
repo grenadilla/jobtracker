@@ -299,7 +299,7 @@ def all_application_tasks(username = None, application_id = None):
         filter = f"WHERE a.user_id = {user_id}"
     elif application_id is not None:
         filter = f"WHERE a.id = {application_id}"
-    query = f'''SELECT corp.name, p.title, p.due_date, task.name 
+    query = f'''SELECT corp.name, p.title, task.due_date, task.name, task.position, task.completed
     FROM Company corp JOIN Posting p 
     ON corp.Id = p.posted_by 
     JOIN Application a ON p.Id = a.posting_id 
@@ -307,20 +307,21 @@ def all_application_tasks(username = None, application_id = None):
     {filter}'''
     query_results = conn.execute(query).fetchall()
 
-    conn.close()    
+    conn.close()
     if query_results is None:
         return None
     
     results = []
     for row in query_results:
-        company_name, title, date, task = row
+        company_name, title, date, task, position, completed = row
         
-        date.strftime('%d/%m/%Y')
+        date = date.strftime('%m/%d/%Y')
+        completed = completed == 1
         
-        result = tuple((company_name, title, date, task))
+        result = tuple((company_name, title, date, task, position, completed))
         results.append(result)
     
-    attributes = ['company', 'title', 'due_date', 'name']
+    attributes = ['company', 'title', 'due_date', 'name', 'position', 'completed']
     return [dict(zip(attributes, result)) for result in results]
 
 def create_task(data):
@@ -336,3 +337,22 @@ def create_task(data):
         VALUES ({position}, {data["application_id"]}, "{data["name"]}", "{data["due_date"]}", {data["completed"]})
     """)
     conn.close()
+
+def edit_task(data):
+    conn = db.connect()
+    date = datetime.datetime.strptime(data['due_date'], "%m/%d/%Y")
+    completed = int(data["completed"])
+    conn.execute(f'UPDATE Application_Task SET name = "{data["name"]}", due_date = "{date.strftime("%Y-%m-%d")}", completed = {completed} WHERE application_id = {data["application_id"]} AND position = {data["position"]}')
+    conn.close()
+
+def delete_task(application_id, position):
+    conn = db.connect()
+    num_tasks = conn.execute(f'SELECT MAX(position) FROM Application_Task WHERE application_id = {application_id}').fetchone()[0]
+    conn.execute(f'DELETE FROM Application_Task WHERE application_id = {application_id} AND position = {position}')
+
+    # decrement the position of all succeeding application tasks
+    for i in range(position + 1, num_tasks + 1):
+        conn.execute(f'UPDATE Application_Task SET position={i - 1} WHERE application_id = {application_id} AND position = {i}')
+
+    conn.close()
+    

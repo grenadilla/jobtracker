@@ -238,4 +238,14 @@ def create_task():
     database.create_task(request.get_json())
     return jsonify("SUCCESS")
 
+@app.route('/task/edit', methods=["POST"])
+@requires_auth
+def edit_task():
+    database.edit_task(request.get_json())
+    return jsonify("SUCCESS")
 
+@app.route('/task/delete/<int:application_id>/<int:position>', methods=["DELETE"])
+@requires_auth
+def delete_task(application_id, position):
+    database.delete_task(application_id, position)
+    return jsonify("SUCCESS")
