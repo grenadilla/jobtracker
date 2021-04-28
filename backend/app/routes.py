@@ -151,7 +151,6 @@ def delete_posting():
     return jsonify("SUCCESS")
 
 @app.route('/application', methods=["GET"])
-#@requires_auth
 def get_application_data():
     query_result = database.fetch_applications()
     return jsonify(query_result)
@@ -189,6 +188,12 @@ def get_skill(skill_id):
     query_result = database.fetch_skill(skill_id)
     return jsonify(query_result)
 
+@app.route('/skills/', methods=["GET"])
+def get_skills_by_posting():
+    posting_id = request.args.get('posting_id', None)
+    query_result = database.fetch_skills_by_posting_id(posting_id)
+    return jsonify(query_result)
+
 @app.route('/skill/edit', methods=["POST"])
 def update_skill():
     database.edit_skill(request.get_json())
@@ -203,7 +208,6 @@ def create_skill():
 def delete_skill():
     database.delete_skill(request.get_json()["id"])
     return jsonify("SUCCESS")
-
 
 @app.route('/application/tasks', methods=["GET"])
 @requires_auth
@@ -233,3 +237,5 @@ def user_applications():
 def create_task():
     database.create_task(request.get_json())
     return jsonify("SUCCESS")
+
+

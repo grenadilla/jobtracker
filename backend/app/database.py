@@ -223,6 +223,22 @@ def fetch_skill(skill_id):
         return None
     return dict(zip(["id", "name"], query_result))
 
+def fetch_skills_by_posting_id(posting_id):
+    conn = db.connect()
+    query = f'''
+    SELECT DISTINCT s.id, s.name
+    FROM Skill s
+    JOIN Posting p
+    JOIN Skill_Requirement sr
+    WHERE s.id = sr.skill_id AND sr.posting_id = {posting_id}
+    '''
+    query_results = conn.execute(query).fetchall()
+    conn.close()
+    if query_results is None:
+        return None
+    attributes = ["id", "name"]
+    return [dict(zip(attributes, result)) for result in query_results]
+
 def edit_skill(data):
     conn = db.connect()
     conn.execute(f'UPDATE Skill SET name = "{data["name"]}" WHERE id = {data["id"]}')
