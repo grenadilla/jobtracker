@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import AuthenticatedRoute from './utils/AuthenticatedRoute';
@@ -14,9 +14,20 @@ import Applications from './pages/Applications';
 import Calendar from './pages/Calendar';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
+import Navbar from 'react-bootstrap/Navbar';
 
 const App = () => (
   <Router>
+    <Navbar bg="light" expand="lg">
+      <Navbar.Brand href="/">Job Tracker</Navbar.Brand>
+      <div>
+        <Link to="/applications" className="navlink">Applications</Link>
+        <Link to="/calendar" className="navlink">Calendar</Link>
+        <Link to="/company" className="navlink">Companies</Link>
+        <Link to="/posting" className="navlink">Postings</Link>
+      </div>
+    </Navbar>
+
     <Switch>
       <Route path="/" exact>
         <Home />

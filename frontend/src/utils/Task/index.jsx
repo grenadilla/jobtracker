@@ -37,8 +37,8 @@ const Task = ({name, title, company, application_id, due_date, completed, positi
         onUpdate && onUpdate();
     }
 
-    const handleDelete = () => {
-        deleteApplicationTask(application_id, position);
+    const handleDelete = async () => {
+        await deleteApplicationTask(application_id, position);
         setIsEditing(false);
         onUpdate && onUpdate();
     }

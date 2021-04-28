@@ -110,31 +110,39 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
                     <span className="material-icons">edit</span>
                     Edit Application
                 </ApplyButton>
+                
+                <div className="details">
+                    <div className="currentCompany">
+                        <img src={`//logo.clearbit.com/${currentApplication.website}`} className="currentLogo" alt={`${currentApplication.company} Logo`}/>
+                        <h3>{currentApplication.company}</h3>
+                    </div>
+                    <div className="currentTitle">
+                        <h1>{currentApplication.title}</h1>
+                        {!postings &&
+                        <span className={clsx("statusPill", currentApplication.status.toLowerCase())}>{currentApplication.status}</span>}
+                    </div>
+                    <div className="attribute">
+                        <h4>Source</h4>
+                        <a href={currentApplication.link}>{currentApplication.link}</a>
+                    </div>
+                    {currentApplication.portal &&
+                    <div className="attribute">
+                        <h4>Portal</h4>
+                        <a href={currentApplication.portal}>{currentApplication.portal}</a>
+                    </div>
+                    }
+                    <div className="attribute">
+                        <h4>Description</h4>
+                        <p>{currentApplication.description}</p>
+                    </div>
+                    <div className="attribute">
+                        <h4>Location</h4>
+                        <p>{currentApplication.location}</p>
+                    </div>
 
-                <div className="currentCompany">
-                    <img src={`//logo.clearbit.com/${currentApplication.website}`} className="currentLogo" alt={`${currentApplication.company} Logo`}/>
-                    <h3>{currentApplication.company}</h3>
-                </div>
-                <div className="currentTitle">
-                    <h1>{currentApplication.title}</h1>
-                    {!postings &&
-                    <span className={clsx("statusPill", currentApplication.status.toLowerCase())}>{currentApplication.status}</span>}
-                </div>
-                <div className="attribute">
-                    <h4>Source</h4>
-                    <a href={currentApplication.link}>{currentApplication.link}</a>
-                </div>
-                <div className="attribute">
-                    <h4>Description</h4>
-                    <p>{currentApplication.description}</p>
-                </div>
-                <div className="attribute">
-                    <h4>Location</h4>
-                    <p>{currentApplication.location}</p>
-                </div>
-
-                <div className="tasks">
-                    {taskDisplay}
+                    <div className="tasks">
+                        {taskDisplay}
+                    </div>
                 </div>
                 
                 <Button onClick={() => setCreatingTask(true)}>Add Task</Button>

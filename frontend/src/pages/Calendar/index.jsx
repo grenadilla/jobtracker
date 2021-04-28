@@ -27,9 +27,9 @@ const Calendar = () => {
         return 0;
     });
 
-    const taskDisplay = tasks.map((task => (
+    const taskDisplay = tasks.length > 0 ? tasks.map((task => (
         <Task {...task} key={`${task.application_id} ${task.position}`} onUpdate={fetchApplicationTasks}/>
-    )))
+    ))) : <h1>Nothing To Do!</h1>;
 
     return (
         <Container className="calendar">
