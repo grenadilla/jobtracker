@@ -62,6 +62,8 @@ const Company = ({edit = false, create = false}) => {
         }).then(() => history.push(redirect));
     }
 
+    const employeeDisplay = companyData ? companyData.worked_for.map((employee) => <li key={employee}>{employee}</li>) : "None";
+
     let page = "Loading...";
     if (companyData) {
         if (edit) {
@@ -97,6 +99,9 @@ const Company = ({edit = false, create = false}) => {
                         <Link to={`/company/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>
                     </div>
                     <p>{companyData.description}</p>
+
+                    <h4>Current and Former Employees:</h4>
+                    <ul>{employeeDisplay}</ul>
                 </>
             )
         }

@@ -98,6 +98,8 @@ def get_companies():
 @app.route('/company/<int:company_id>', methods=["GET"])
 def get_company(company_id):
     query_result = database.fetch_company(company_id)
+    worked_for = database.worked_for(company_id)
+    query_result["worked_for"] = worked_for
     return jsonify(query_result)
 
 @app.route('/company/edit', methods=["POST"])

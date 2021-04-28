@@ -355,4 +355,13 @@ def delete_task(application_id, position):
         conn.execute(f'UPDATE Application_Task SET position={i - 1} WHERE application_id = {application_id} AND position = {i}')
 
     conn.close()
-    
+
+def worked_for(company_id):
+    conn = db.connect()
+    query_results = conn.execute(f"""SELECT User.name 
+        FROM Company JOIN Worked_For ON Company.id = Worked_For.company_id
+        JOIN User ON Worked_For.user_id = User.id
+        WHERE Company.id = {company_id}
+    """).fetchall()
+    conn.close()
+    return [name[0] for name in query_results]
