@@ -8,6 +8,7 @@ import './styles.css';
 import { request } from '../../utils/api';
 import dateConvert from '../../utils/dateConvert';
 import Task from '../../utils/Task';
+import ApplyButton from '../../utils/buttons/ApplyButton';
 
 const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
     const [itemData, setItemData] = useState([]);
@@ -18,13 +19,17 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
     const [creatingTask, setCreatingTask] = useState(false);
     const [taskFormData, setTaskFormData] = useState({name: "", due_date: ""});
 
+    const fetchApplications = () => {
+        request('GET', '/application/user')
+            .then((data) => setItemData(data))
+    }
+
     useEffect(() => {
         if (!loggedIn) {
             return;
         }
 
-        request('GET', '/application/user')
-            .then((data) => setItemData(data))
+        fetchApplications();
     }, []);
 
     useEffect(() => {
@@ -92,8 +97,18 @@ const Applications = ({startId = -1, postings = false, loggedIn = false}) => {
             
             {currentId > 0 &&
             <div className="applicationDetail">
+                <ApplyButton
+                    className="editApplicationButton"
+                    applicationToUpdate={currentId}
+                    variant="outline-primary"
+                    onSubmit={() => fetchApplications()}
+                >
+                    <span class="material-icons">edit</span>
+                    Edit Application
+                </ApplyButton>
+
                 <div className="currentCompany">
-                    <img src={`//logo.clearbit.com/${currentApplication.website}`} className="currentLogo"/>
+                    <img src={`//logo.clearbit.com/${currentApplication.website}`} className="currentLogo" alt={`${currentApplication.company} Logo`}/>
                     <h3>{currentApplication.company}</h3>
                 </div>
                 <div className="currentTitle">

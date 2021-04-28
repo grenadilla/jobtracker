@@ -17,8 +17,8 @@ const defaultValues = {};
 const statusOptions = ['Interested', 'Applied', 'Rejected', 'Offer', 'Accepted']
   .map(label => ({ label, value: label.toUpperCase() }));
 
-// if update mode is desired, provide the application id to update for `applicationToUpdate`
-const ApplyButton = ({ postingId, applicationToUpdate = -1 }) => {
+// if update mode is desired, provide the application id to update for `applicationToUpdate` (and postingId is not necessary then)
+const ApplyButton = ({ postingId, applicationToUpdate = -1, children, onSubmit, ...props }) => {
   const [showPopup, setShowPopup] = useState(false);
   const methods = useForm({
     defaultValues,
@@ -35,29 +35,30 @@ const ApplyButton = ({ postingId, applicationToUpdate = -1 }) => {
     }
   }, [applicationToUpdate, showPopup]);
 
-  const onSubmit = async ({ status, portal }) => {
+  const handleValidSubmit = async ({ status, portal }) => {
     if (applicationToUpdate >= 0) {
       await updateApplication(applicationToUpdate, status, portal);
     } else {
       await createApplication(postingId, status, portal);
     }
     setShowPopup(false);
+    onSubmit && onSubmit();
   }
 
-  const onError = data => {
+  const handleError = data => {
     console.log(data);
   }
 
   return (
     <div>
-      <Button onClick={() => setShowPopup(true)}>Apply Now</Button>
+      <Button {...props} onClick={() => setShowPopup(true)}>{children || 'Apply Now'}</Button>
 
       <Modal show={showPopup} onHide={() => setShowPopup(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Apply Now</Modal.Title>
+          <Modal.Title style={{ display: 'flex', alignItems: 'center' }}>{children || 'Apply Now'}</Modal.Title>
         </Modal.Header>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit, onError)}>
+          <form onSubmit={handleSubmit(handleValidSubmit, handleError)}>
             <Modal.Body>
               <Select name="status" options={statusOptions} placeholder="Status" />
               <Input name="portal" placeholder="Portal Link" />

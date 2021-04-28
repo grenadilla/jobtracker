@@ -128,3 +128,9 @@
 .attribute {
     margin-top: 24px;
 }
+
+.editApplicationButton {
+    display: flex;
+    margin-left: auto;
+    margin-bottom: 10px;
+}
