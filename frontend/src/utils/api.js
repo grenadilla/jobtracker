@@ -63,3 +63,8 @@ export const getAllSkills = async () => {
 export const getCurrentUser = () => request('GET', '/user');
 
 export const getCurrentUserSkills = () => request('GET', '/user/skills');
+
+export const updateApplicationTask = (data) => request('POST', '/task/edit', data);
+
+export const deleteApplicationTask = (applicationId, position) =>
+  request('DELETE', `/task/delete/${applicationId}/${position}`);
