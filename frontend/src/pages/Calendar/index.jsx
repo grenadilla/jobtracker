@@ -6,10 +6,14 @@ import './styles.css';
 
 const Calendar = () => {
     const [itemData, setItemData] = useState([]);
-
-    useEffect(() => {
+    
+    function fetchApplicationTasks() {
         request('GET', '/application/tasks')
             .then((data) => setItemData(data));
+    }
+
+    useEffect(() => {
+        fetchApplicationTasks();
     }, []);
 
     const tasks = itemData.sort((task1, task2) => {
@@ -24,7 +28,7 @@ const Calendar = () => {
     });
 
     const taskDisplay = tasks.map((task => (
-        <Task {...task} key={`${task.application_id} ${task.position}`}/>
+        <Task {...task} key={`${task.application_id} ${task.position}`} onUpdate={fetchApplicationTasks}/>
     )))
 
     return (

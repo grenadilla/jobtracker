@@ -299,7 +299,7 @@ def all_application_tasks(username = None, application_id = None):
         filter = f"WHERE a.user_id = {user_id}"
     elif application_id is not None:
         filter = f"WHERE a.id = {application_id}"
-    query = f'''SELECT corp.name, p.title, task.due_date, task.name, task.position, task.completed
+    query = f'''SELECT corp.name, p.title, task.due_date, task.name, task.position, task.completed, a.id
     FROM Company corp JOIN Posting p 
     ON corp.Id = p.posted_by 
     JOIN Application a ON p.Id = a.posting_id 
@@ -313,15 +313,15 @@ def all_application_tasks(username = None, application_id = None):
     
     results = []
     for row in query_results:
-        company_name, title, date, task, position, completed = row
+        company_name, title, date, task, position, completed, application_id = row
         
         date = date.strftime('%m/%d/%Y')
         completed = completed == 1
         
-        result = tuple((company_name, title, date, task, position, completed))
+        result = tuple((company_name, title, date, task, position, completed, application_id))
         results.append(result)
     
-    attributes = ['company', 'title', 'due_date', 'name', 'position', 'completed']
+    attributes = ['company', 'title', 'due_date', 'name', 'position', 'completed', 'application_id']
     return [dict(zip(attributes, result)) for result in results]
 
 def create_task(data):
