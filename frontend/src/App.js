@@ -15,6 +15,7 @@ import Calendar from './pages/Calendar';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Navbar from 'react-bootstrap/Navbar';
+import { baseUrl } from './utils/config';
 
 const App = () => (
   <Router>
@@ -66,7 +67,7 @@ const App = () => (
       </AuthenticatedRoute>
 
       <Route exact path="/company">
-        <AllView domain="/company" apiDomain="http://127.0.0.1:5000/company/all" attributes={["id", "name", "website", "description"]} /> 
+        <AllView domain="/company" apiDomain={`${baseUrl}/company/all`} attributes={["id", "name", "website", "description"]} /> 
       </Route>
 
       <Route exact path="/company/create">
@@ -85,7 +86,7 @@ const App = () => (
         <Posting loggedIn/>
       </AuthenticatedRoute>
       <Route exact path="/posting">
-        <AllView domain="/posting" apiDomain="http://127.0.0.1:5000/posting/all" attributes={["id", "title", "description", "location", "link", "due_date", "posted_by"]} />
+        <AllView domain="/posting" apiDomain={`${baseUrl}/posting/all`} attributes={["id", "title", "description", "location", "link", "due_date", "posted_by"]} />
       </Route>
       <Route exact path="/posting/create">
         <Posting create />
@@ -102,7 +103,7 @@ const App = () => (
       </Route>
 
       <Route exact path="/user">
-        <AllView domain="/user" apiDomain="http://127.0.0.1:5000/user/all" attributes={["id", "username", "name", "grade", "gpa"]} /> 
+        <AllView domain="/user" apiDomain={`${baseUrl}/user/all`} attributes={["id", "username", "name", "grade", "gpa"]} /> 
       </Route>
 
       <Route exact path="/user/create">

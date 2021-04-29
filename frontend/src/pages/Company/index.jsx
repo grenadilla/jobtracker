@@ -3,6 +3,7 @@ import { Link, useParams, useHistory } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { baseUrl } from '../../utils/config';
 
 const Company = ({edit = false, create = false}) => {
     const { id } = useParams();
@@ -15,7 +16,7 @@ const Company = ({edit = false, create = false}) => {
 
     useEffect(() => {
         if (!create) {
-            const apiDomain = `http://127.0.0.1:5000/company/${id}`
+            const apiDomain = `${baseUrl}/company/${id}`
             const url = new URL(apiDomain);
             fetch(url)
                 .then((response) => response.json())
@@ -39,7 +40,7 @@ const Company = ({edit = false, create = false}) => {
             description: formDescription
         }
 
-        const url = create ? "http://127.0.0.1:5000/company/create" : "http://127.0.0.1:5000/company/edit";
+        const url = create ? `${baseUrl}/company/create` : `${baseUrl}/company/edit`;
         const redirect = create ? '/company' : `/company/${id}`;
         fetch(url, { method: 'post', 
             headers: {
@@ -51,7 +52,7 @@ const Company = ({edit = false, create = false}) => {
     }
 
     function apiDelete() {
-        const url = "http://127.0.0.1:5000/company/delete";
+        const url = `${baseUrl}/company/delete`;
         const redirect = '/company';
         fetch(url, { method: 'post', 
             headers: {

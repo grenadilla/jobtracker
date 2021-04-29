@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
+import { baseUrl } from '../../utils/config';
 
 const MostApplicants = () => {
     const [applicantData, setApplicantData] = useState(null);
 
     useEffect(() => {
-        const url = "http://127.0.0.1:5000/most_applicants";
+        const url = `${baseUrl}/most_applicants`;
         fetch(url)
             .then((response) => response.json())
             .then((data) => setApplicantData(data))

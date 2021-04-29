@@ -1,6 +1,8 @@
-const API = 'http://localhost:5000';
-let token;
+import { baseUrl } from './config';
 
+const API = baseUrl;
+
+let token;
 export function setAuthToken(newToken) {
   token = newToken;
 }
