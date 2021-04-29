@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-if os.environ.get('GAE_ENV') != 'standard':
+if os.environ.get('FLASK_ENV') != "production":
     variables = load(open("app.yaml"), Loader=Loader)
     env_variables = variables['env_variables']
     for var in env_variables:
