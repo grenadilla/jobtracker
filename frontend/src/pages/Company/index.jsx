@@ -93,8 +93,9 @@ const Company = ({edit = false, create = false}) => {
         } else {
             page = (
                 <>
+                    <img src={`//logo.clearbit.com/${companyData.website}`} alt={`${companyData.name} Logo`} />
                     <h1>ID: {companyData.id}</h1>
-                    <h1>Name: {companyData.name}</h1>
+                    <h1>{companyData.name}</h1>
                     <div>
                         <Link to={`/company/${id}/edit`} style={{marginRight: 10}}>Edit</Link>
                         <Link to={`/company/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>

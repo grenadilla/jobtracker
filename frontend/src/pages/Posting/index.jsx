@@ -84,16 +84,29 @@ const Posting = ({edit = false, create = false, loggedIn = false}) => {
         page = (
             <>
                 <h1>ID: {postingData.id}</h1>
-                <h1>Title: {postingData.title}</h1>
+                <h1>{postingData.title}</h1>
+                <h2>{postingData.company}</h2>
                 <div>
                     <Link to={`/posting/${id}/edit`} style={{marginRight: 10}}>Edit</Link>
                     <Link to={`/posting/${id}/delete`} onClick={() => apiDelete()}>Delete</Link>
                 </div>
-                <p>{postingData.description}</p>
-                <h2>Location: {postingData.location}</h2>
-                <h2>Link: {postingData.link}</h2>
-                <h2>Due Date: {postingData.due_date}</h2>
-                <h2>Posted By: {postingData.company}</h2>
+
+                <div>
+                    <h2>Description</h2>
+                    <p>{postingData.description}</p>
+                </div>
+                <div>
+                    <h2>Location</h2>
+                    <p>{postingData.location}</p>
+                </div>
+                <div>
+                    <h2>Link</h2>
+                    <a href={`//${postingData.link}`}>{postingData.link}</a>
+                </div>
+                <div>
+                    <h2>Due Date</h2>
+                    <p>{postingData.due_date}</p>
+                </div>
             </>
         )
     } else if (edit || create) {

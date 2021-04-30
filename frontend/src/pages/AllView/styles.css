@@ -1,0 +1,13 @@
+.dataTable {
+    width: 100%;
+}
+
+.dataRow {
+    max-height: 200px;
+    cursor: pointer;
+}
+
+.dataCell {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

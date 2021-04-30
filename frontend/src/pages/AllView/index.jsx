@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Paginator from '../../utils/pagination';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import './styles.css';
 
 const AllView = ({domain, apiDomain, attributes}) => {
     const query = new URLSearchParams(useLocation().search);
@@ -33,10 +34,10 @@ const AllView = ({domain, apiDomain, attributes}) => {
     const table = useMemo(() => {
         const rows = tableData.map((entry) => {
             const cells = attributes.map((attribute) => (
-                <td key={attribute}>{entry[attribute]}</td>
+                <td key={attribute} className="dataCell">{entry[attribute]}</td>
             ))
             return (
-                <tr key={entry.id} style={{cursor: "pointer"}} onClick={() => history.push(`${domain}/${entry.id}`)}>
+                <tr key={entry.id} onClick={() => history.push(`${domain}/${entry.id}`)} className="dataRow">
                     {cells}
                 </tr>
             );
@@ -45,7 +46,7 @@ const AllView = ({domain, apiDomain, attributes}) => {
             <th key={attribute}>{attribute}</th>
         ));
         return (
-            <Table striped bordered hover>
+            <Table striped bordered hover className="dataTable">
                 <thead>
                     <tr>
                         {thCells}
