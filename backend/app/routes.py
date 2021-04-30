@@ -251,3 +251,9 @@ def edit_task():
 def delete_task(application_id, position):
     database.delete_task(application_id, position)
     return jsonify("SUCCESS")
+
+@app.route('/posting/suggest', methods=["GET"])
+@requires_auth
+def suggest_postings():
+    query_result = database.suggest_postings(current_user["email"])
+    return jsonify(query_result)

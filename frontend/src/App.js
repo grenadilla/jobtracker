@@ -15,6 +15,7 @@ import Calendar from './pages/Calendar';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Navbar from 'react-bootstrap/Navbar';
+import SuggestedPostings from './pages/SuggestedPostings';
 import { baseUrl } from './utils/config';
 
 const App = () => (
@@ -30,6 +31,7 @@ const App = () => (
         <Link to="/company" className="navlink">Companies</Link>
         <Link to="/posting" className="navlink">Postings</Link>
         <Link to="/most_applicants" className="navlink">Popular Companies</Link>
+        <Link to="/suggestions" className="navlink">Suggested Postings</Link>
       </div>
     </Navbar>
 
@@ -60,6 +62,10 @@ const App = () => (
 
       <AuthenticatedRoute path="/applications" exact>
         <Applications loggedIn />
+      </AuthenticatedRoute>
+
+      <AuthenticatedRoute path="/suggestions" exact>
+        <SuggestedPostings />
       </AuthenticatedRoute>
 
       <Route path="/applications" exact>

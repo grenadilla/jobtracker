@@ -365,3 +365,11 @@ def worked_for(company_id):
     """).fetchall()
     conn.close()
     return [name[0] for name in query_results]
+
+def suggest_postings(username):
+    conn = db.connect()
+    user_id = conn.execute(f'SELECT id FROM User WHERE username = "{username}"').fetchone()[0]
+    query_results = conn.execute(f'CALL Qualification({user_id})').fetchall()
+    conn.close()
+    attributes = ['posting_id', 'qualification', 'posting_id', 'title', 'description', 'location', 'link', 'due_date', 'posted_by']
+    return [dict(zip(attributes, result)) for result in query_results]
