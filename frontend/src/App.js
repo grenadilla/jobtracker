@@ -22,10 +22,14 @@ const App = () => (
     <Navbar bg="light" expand="lg">
       <Navbar.Brand href="/">Job Tracker</Navbar.Brand>
       <div>
+        <Link to="/profile" className="navlink">Edit Profile</Link>
+        <Link to="/login" className="navlink">Login</Link>
+        <Link to="/logout" className="navlink">Logout</Link>
         <Link to="/applications" className="navlink">Applications</Link>
         <Link to="/calendar" className="navlink">Calendar</Link>
         <Link to="/company" className="navlink">Companies</Link>
         <Link to="/posting" className="navlink">Postings</Link>
+        <Link to="/most_applicants" className="navlink">Popular Companies</Link>
       </div>
     </Navbar>
 
@@ -64,6 +68,11 @@ const App = () => (
 
       <AuthenticatedRoute path="/calendar" exact>
         <Calendar />
+      </AuthenticatedRoute>
+
+      <AuthenticatedRoute path="/suggestions" exact>
+        <AllView domain="/suggestions" apiDomain={`${baseUrl}/suggestions`} 
+          attributes={["id", "title", "description", "location", "link", "due_date", "posted_by", "score"]} />
       </AuthenticatedRoute>
 
       <Route exact path="/company">

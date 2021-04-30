@@ -6,30 +6,13 @@ import { Link } from 'react-router-dom';
 
 const Home = () => (
   <Container>
-    <h1>Jobtracker System - Still Under Construction</h1>
+    <h1>Jobtracker System</h1>
     <p>
-      Hey there! We've got some basic functionality working for the midterm demo.
-      Just make sure you have the backend running.
-      Click on some of the links below to get to some CRUD operations.
+      We've created this job and internship application tracking system for students like us.
+      Mark the postings you've applied to; add tasks to these applications; and keep up to date with what you need to do.
+      It's that easy!
+      Check out the calendar for a full list of all your tasks.
     </p>
-    <Row>
-      <Link to="/company">Company</Link>
-    </Row>
-    <Row>
-      <Link to="/posting">Posting</Link>
-    </Row>
-    <Row>
-      <Link to="/most_applicants">Jeffrey's Advanced Query</Link>
-    </Row>
-    <Row>
-      <Link to="/profile">Edit Profile</Link>
-    </Row>
-    <Row>
-      <Link to="/login">Login</Link>
-    </Row>
-    <Row>
-      <Link to="/logout">Logout</Link>
-    </Row>
   </Container>
 );
 
